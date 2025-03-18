@@ -1,8 +1,8 @@
 import pandas as pd
 
 # Define filenames
-csv_file = "cleaned_data.csv"  # Use cleaned data
-sql_file = "insert_data.sql"
+csv_file = "DataSet.csv"  # Use cleaned data
+sql_file = "init.sql"
 table_name = "quillquestdb"  # Your MySQL table name
 
 # Load CSV
