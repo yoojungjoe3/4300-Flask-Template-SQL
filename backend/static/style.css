@@ -49,6 +49,7 @@
 }
 
 .input-box{
+    background-color: #D9B382;
     border-radius: 0px;
     border:1px solid black;
     display: flex;
