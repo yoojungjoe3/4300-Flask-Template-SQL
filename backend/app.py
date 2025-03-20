@@ -20,6 +20,7 @@ mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER,LOCAL_MYSQL_USER_PASSWORD,L
 
 # Path to init.sql file. This file can be replaced with your own file for testing on localhost, but do NOT move the init.sql file
 mysql_engine.load_file_into_db()
+#So the init_sql is in a databse rn in this
 
 app = Flask(__name__)
 CORS(app)
@@ -29,7 +30,7 @@ CORS(app)
 # there's a much better and cleaner way to do this
 def sql_search(episode):
     query_sql = f"""SELECT * FROM episodes WHERE LOWER( title ) LIKE '%%{episode.lower()}%%' limit 10"""
-    keys = ["id","title","descr"]
+    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
     data = mysql_engine.query_selector(query_sql)
     return json.dumps([dict(zip(keys,i)) for i in data])
 
