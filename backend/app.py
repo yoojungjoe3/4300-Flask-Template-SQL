@@ -34,10 +34,13 @@ def sql_search(text):
     data = mysql_engine.query_selector(query_sql)
     return json.dumps([dict(zip(keys,i)) for i in data])
 
+
+#HOMEPAGE
 @app.route("/")
 def home():
     return render_template('base.html',title="sample html")
 
+#SEARCHING FOR FICS PAGE
 @app.route("/fics")
 def fics_search():
     text = request.args.get("title")

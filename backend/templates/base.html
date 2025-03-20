@@ -33,12 +33,13 @@
             document.getElementById('filter-text-val').focus()
         }
 
+        //This function fiters the inputed search text
         function filterText(){
-            document.getElementById("answer-box").innerHTML = ""
-            console.log(document.getElementById("filter-text-val").value)
-            fetch("/episodes?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
-            .then((response) => response.json())
-            .then((data) => data.forEach(row => {
+            document.getElementById("answer-box").innerHTML = "" //Clears the Display
+            console.log(document.getElementById("filter-text-val").value) //puts text into the console
+            fetch("/fics?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
+            .then((response) => response.json())  //converts JSON response to javascript
+            .then((data) => data.forEach(row => {  //updates the display
                 
                 let tempDiv = document.createElement("div")
                 tempDiv.innerHTML = answerBoxTemplate(row.title,row.descr)
