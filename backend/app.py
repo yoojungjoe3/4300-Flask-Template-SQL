@@ -44,7 +44,7 @@ def home():
 @app.route("/fics")
 def fics_search():
     text = request.args.get("title")
-    return sql_search(text)
+    jsonify(json.loads(sql_search(text)))
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True,host="0.0.0.0",port=5000)
