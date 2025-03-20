@@ -42,7 +42,7 @@
             .then((data) => data.forEach(row => {  //updates the display
                 
                 let tempDiv = document.createElement("div")
-                tempDiv.innerHTML = answerBoxTemplate(row.title,row.descr)
+                tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
                 document.getElementById("answer-box").appendChild(tempDiv)
             }));
 

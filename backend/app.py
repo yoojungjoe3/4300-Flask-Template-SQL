@@ -44,7 +44,6 @@ def home():
 @app.route("/fics")
 def fics_search():
     text = request.args.get("title")
-    print("hi")
     return sql_search(text)
 
 if 'DB_NAME' not in os.environ:
