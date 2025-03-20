@@ -31,7 +31,7 @@ CORS(app)
 def sql_search(text):
     query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
-    data = mysql_engine.query_selector(query_sql)
+    data = mysql_engine.query_selector(query_sql) 
     return json.dumps([dict(zip(keys,i)) for i in data])
 
 
