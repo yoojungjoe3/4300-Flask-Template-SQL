@@ -49,10 +49,9 @@ with open("init.sql", "r", encoding="utf-8") as file:
             names.append(find.group(1))
             fandom_clean = clean_text(find.group(2))
             ship_clean = clean_text(find.group(3))
-            if fandom_clean not in fandoms:
-                fandoms.append(fandom_clean)
-            if ship_clean not in ships:
-                ships.append(ship_clean)
+            # Append even if duplicate, if your ordering needs to match the SQL records.
+            fandoms.append(fandom_clean)
+            ships.append(ship_clean)
 
 def vector_search(query):
     """
@@ -107,10 +106,11 @@ def sql_search(text):
     data = mysql_engine.query_selector(query_sql)
     return [dict(zip(keys, record)) for record in data]
 
+# SEARCHING FOR FICS PAGE
 @app.route("/fics")
 def fics_search():
-    # Get the user's query (using the parameter "query")
-    user_query = request.args.get("query")
+    # Get the user's query (using the parameter "Name")
+    user_query = request.args.get("Name")
     if not user_query:
         return json.dumps({"error": "Missing query parameter."})
     
