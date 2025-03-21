@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <title>{% block title %}QuillQuest{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="full-body-container">
+    <div class="top-text">
+      <!-- Search form here -->
+      <input placeholder="Search for your fanfic" id="filter-text-val">
+    </div>
+    
+    <!-- Results block -->
+    {% if results %}
+      <h1>Fic Search Results</h1>
+      {% if top_fic %}
+        <p><strong>Top Fanfic:</strong> {{ top_fic }}</p>
+      {% endif %}
+      {% if second_fic %}
+        <p><strong>Second Best Fanfic:</strong> {{ second_fic }}</p>
+      {% endif %}
+      <ul>
+        {% for record in results %}
+          <li>
+            <strong>{{ record.Name }}</strong> — Similarity: {{ record.similarity }}<br>
+            <em>{{ record.Abstract }}</em>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</body>
+</html>

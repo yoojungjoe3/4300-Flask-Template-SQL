@@ -91,10 +91,10 @@ def vector_search(query):
     second_highest_key = sorted_keys[1]
     
     # Adjust index for names list (keys start at 1, list is zero-indexed)
-    print("Top fanfic:", names[highest_key - 1])
-    print("Second best fanfic:", names[second_highest_key - 1])
+    top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
+    second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
     
-    return total_sim_dict
+    return total_sim_dict, top_fic, second_fic
 
 def sql_search(text):
     """
@@ -127,8 +127,15 @@ def fics_search():
     
     # Optionally sort the results by similarity (highest first)
     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+
+    sim_dict, top_fic, second_fic = vector_search(user_query)
     
-    return json.dumps(results_sorted)
+    # Render the results in the HTML template
+    return render_template("results.html", 
+                           results=results_sorted, 
+                           top_fic=top_fic, 
+                           second_fic=second_fic)
+
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
