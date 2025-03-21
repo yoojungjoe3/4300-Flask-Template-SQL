@@ -1,50 +1,134 @@
 import json
 import os
+import re
+import numpy as np
 from flask import Flask, render_template, request
 from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-# ROOT_PATH for linking with all your files. 
-# Feel free to use a config.py or settings.py with a global export variable
-os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
+# Set ROOT_PATH for linking with all your files.
+os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
-# These are the DB credentials for your OWN MySQL
-# Don't worry about the deployment credentials, those are fixed
-# You can use a different DB name if you want to
+# Database credentials (adjust if needed)
 LOCAL_MYSQL_USER = "root"
 LOCAL_MYSQL_USER_PASSWORD = "quillquest"
 LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "quillquestdb"
 
-mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER,LOCAL_MYSQL_USER_PASSWORD,LOCAL_MYSQL_PORT,LOCAL_MYSQL_DATABASE)
-
-# Path to init.sql file. This file can be replaced with your own file for testing on localhost, but do NOT move the init.sql file
+# Initialize database handler and load init.sql into the database
+mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER, LOCAL_MYSQL_USER_PASSWORD, LOCAL_MYSQL_PORT, LOCAL_MYSQL_DATABASE)
 mysql_engine.load_file_into_db()
-#So the init_sql is in a databse rn in this
 
 app = Flask(__name__)
 CORS(app)
 
-# Sample search, the LIKE operator in this case is hard-coded, 
-# but if you decide to use SQLAlchemy ORM framework, 
-# there's a much better and cleaner way to do this
-def sql_search(text):
-    query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
-    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
-    data = mysql_engine.query_selector(query_sql) 
-    return json.dumps([dict(zip(keys,i)) for i in data])
-
-
-#HOMEPAGE
+# HOMEPAGE
 @app.route("/")
 def home():
-    return render_template('base.html',Name="sample html")
+    return render_template('base.html', Name="sample html")
 
-#SEARCHING FOR FICS PAGE
+def clean_text(text):
+    """Convert text to lowercase and remove punctuation."""
+    return re.sub(r'[^\w\s]', '', text.lower())
+
+# Lists to hold extracted data from init.sql
+fandoms = []
+ships = []
+names = []
+
+# Regex to capture Name, Fandom, and Ship(s)
+pattern = re.compile(r"VALUES\s*\(\s*'\"(.*?)\"',\s*'\"(.*?)\"',\s*'\"(.*?)\"',")
+
+# Read the init.sql file and populate the lists
+with open("init.sql", "r", encoding="utf-8") as file:
+    for line in file:
+        find = pattern.search(line)
+        if find:
+            names.append(find.group(1))
+            fandom_clean = clean_text(find.group(2))
+            ship_clean = clean_text(find.group(3))
+            if fandom_clean not in fandoms:
+                fandoms.append(fandom_clean)
+            if ship_clean not in ships:
+                ships.append(ship_clean)
+
+def vector_search(query):
+    """
+    Compute combined similarity scores for the query against both fandoms and ships.
+    Also prints the top two fanfic titles.
+    Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
+    """
+    # Clean and prepare the query
+    words = clean_text(query).split()
+    query_text = " ".join(words)
+    
+    vectorizer = TfidfVectorizer()
+
+    # Compare query to fandoms
+    join_fandom_query = fandoms + [query_text]
+    tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query)
+    query_vector_fandoms = tfidf_matrix_fandoms[-1]
+    candidate_vectors_fandoms = tfidf_matrix_fandoms[:-1]
+    similarities_fandoms = cosine_similarity(query_vector_fandoms, candidate_vectors_fandoms).flatten()
+
+    # Compare query to ships
+    join_ship_query = ships + [query_text]
+    tfidf_matrix_ships = vectorizer.fit_transform(join_ship_query)
+    query_vector_ships = tfidf_matrix_ships[-1]
+    candidate_vectors_ships = tfidf_matrix_ships[:-1]
+    similarities_ships = cosine_similarity(query_vector_ships, candidate_vectors_ships).flatten()
+    
+    # Combine the similarity scores element-wise
+    combined_similarities = np.array(similarities_fandoms) + np.array(similarities_ships)
+    total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
+    
+    # Sort keys (record indices) by similarity score (highest first)
+    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+    
+    # Get the keys for the highest and second-highest scores
+    highest_key = sorted_keys[0]
+    second_highest_key = sorted_keys[1]
+    
+    # Adjust index for names list (keys start at 1, list is zero-indexed)
+    print("Top fanfic:", names[highest_key - 1])
+    print("Second best fanfic:", names[second_highest_key - 1])
+    
+    return total_sim_dict
+
+def sql_search(text):
+    """
+    Perform an SQL search using the LIKE operator.
+    This is a sample function. Adjust it as needed to combine with vector search results.
+    """
+    query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
+    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
+    data = mysql_engine.query_selector(query_sql)
+    return [dict(zip(keys, record)) for record in data]
+
 @app.route("/fics")
 def fics_search():
-    text = request.args.get("Name")
-    return sql_search(text)
+    # Get the user's query (using the parameter "query")
+    user_query = request.args.get("query")
+    if not user_query:
+        return json.dumps({"error": "Missing query parameter."})
+    
+    # Get vector-based similarity scores
+    sim_dict = vector_search(user_query)
+    
+    # Get SQL search results (if combining with vector search)
+    results = sql_search(user_query)
+    
+    # Attach the similarity score to each SQL result based on record position.
+    # NOTE: Ensure the ordering here matches the ordering in your vector search.
+    for i, record in enumerate(results):
+        record["similarity"] = sim_dict.get(i + 1, 0)
+    
+    # Optionally sort the results by similarity (highest first)
+    results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    
+    return json.dumps(results_sorted)
 
 if 'DB_NAME' not in os.environ:
-    app.run(debug=True,host="0.0.0.0",port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
