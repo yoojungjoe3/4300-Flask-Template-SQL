@@ -107,35 +107,55 @@ def sql_search(text):
     return [dict(zip(keys, record)) for record in data]
 
 # SEARCHING FOR FICS PAGE
+# @app.route("/fics")
+# def fics_search():
+#     # Get the user's query (using the parameter "Name")
+#     user_query = request.args.get("Name")
+#     if not user_query:
+#         return json.dumps({"error": "Missing query parameter."})
+    
+#     # Get vector-based similarity scores
+#     sim_dict = vector_search(user_query)
+    
+#     # Get SQL search results (if combining with vector search)
+#     results = sql_search(user_query)
+    
+#     # Attach the similarity score to each SQL result based on record position.
+#     # NOTE: Ensure the ordering here matches the ordering in your vector search.
+#     for i, record in enumerate(results):
+#         record["similarity"] = sim_dict.get(i + 1, 0)
+    
+#     # Optionally sort the results by similarity (highest first)
+#     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+
+#     sim_dict, top_fic, second_fic = vector_search(user_query)
+    
+#     # Render the results in the HTML template
+#     return render_template("results.html", 
+#                            results=results_sorted, 
+#                            top_fic=top_fic, 
+#                            second_fic=second_fic)
+
 @app.route("/fics")
 def fics_search():
-    # Get the user's query (using the parameter "Name")
     user_query = request.args.get("Name")
     if not user_query:
-        return json.dumps({"error": "Missing query parameter."})
-    
-    # Get vector-based similarity scores
-    sim_dict = vector_search(user_query)
-    
-    # Get SQL search results (if combining with vector search)
+        return json.dumps({"error": "Missing query parameter."}), 400
+
+    sim_dict, top_fic, second_fic = vector_search(user_query)
     results = sql_search(user_query)
     
-    # Attach the similarity score to each SQL result based on record position.
-    # NOTE: Ensure the ordering here matches the ordering in your vector search.
     for i, record in enumerate(results):
         record["similarity"] = sim_dict.get(i + 1, 0)
     
-    # Optionally sort the results by similarity (highest first)
     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
-
-    sim_dict, top_fic, second_fic = vector_search(user_query)
     
-    # Render the results in the HTML template
-    return render_template("results.html", 
-                           results=results_sorted, 
-                           top_fic=top_fic, 
-                           second_fic=second_fic)
-
+    response = {
+        "results": results_sorted,
+        "top_fic": top_fic,
+        "second_fic": second_fic,
+    }
+    return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)

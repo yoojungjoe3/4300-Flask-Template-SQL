@@ -32,21 +32,74 @@
         function sendFocus(){
             document.getElementById('filter-text-val').focus()
         }
+        
 
         //This function fiters the inputed search text
-        function filterText(){
-            document.getElementById("answer-box").innerHTML = "" //Clears the Display
-            console.log(document.getElementById("filter-text-val").value) //puts text into the console
-            fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
-            .then((response) => response.json())  //converts JSON response to javascript
-            .then((data) => data.forEach(row => {  //updates the display
+        // function filterText(){
+        //     document.getElementById("answer-box").innerHTML = "" //Clears the Display
+        //     console.log(document.getElementById("filter-text-val").value) //puts text into the console
+        //     fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
+        //     .then((response) => response.json())  //converts JSON response to javascript
+        //     .then((data) => data.forEach(row => {  //updates the display
                 
-                let tempDiv = document.createElement("div")
-                tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
-                document.getElementById("answer-box").appendChild(tempDiv)
-            }));
+        //         let tempDiv = document.createElement("div")
+        //         tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
+        //         document.getElementById("answer-box").appendChild(tempDiv)
+        //     }));
 
-        }
-            
+        // }
+    function filterText(){
+      // Clear previous results
+      const answerBox = document.getElementById("answer-box");
+      answerBox.innerHTML = "";
+
+      // Get the user's search text
+      const searchText = document.getElementById("filter-text-val").value;
+      console.log(searchText);
+
+      // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
+      fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
+        .then(response => {
+          if (!response.ok) {
+            // Optionally handle HTTP errors
+            return response.text().then(text => {
+              throw new Error("Server error: " + text);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Display the top fanfics first
+          if (data.top_fic) {
+            const topDiv = document.createElement("div");
+            topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
+            answerBox.appendChild(topDiv);
+          }
+          if (data.second_fic) {
+            const secondDiv = document.createElement("div");
+            secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
+            answerBox.appendChild(secondDiv);
+          }
+
+          // Then loop over the results and display them
+          if (data.results && data.results.length > 0) {
+            const list = document.createElement("ul");
+            data.results.forEach(record => {
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `<strong>${record.Name}</strong> — Similarity: ${record.similarity}<br>
+                                    <em>${record.Abstract}</em>`;
+              list.appendChild(listItem);
+            });
+            answerBox.appendChild(list);
+          } else {
+            answerBox.innerHTML = "<p>No results found.</p>";
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          answerBox.innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+  }
+ 
     </script>
 </body>
