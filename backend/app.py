@@ -141,7 +141,7 @@ def vector_search(user_query):
 def fics_search():
     user_query = request.args.get("Name")
     if not user_query:
-        return json.dumps({"message": "Please input a query :)"})
+        return "Please input a query :)"
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
     # results = sql_search(user_query)
