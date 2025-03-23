@@ -59,7 +59,6 @@ def vector_search(user_query):
     Also prints the top two fanfic titles.
     Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
     """
-    print(user_query)
     # Clean and prepare the query
     words = clean_text(user_query).split()
     query_text = " ".join(words)
@@ -141,7 +140,7 @@ def vector_search(user_query):
 def fics_search():
     user_query = request.args.get("Name")
     if not user_query:
-        return "Please input a query :)"
+        return json.dumps({"message": "Please input a query :)"})
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
     # results = sql_search(user_query)
