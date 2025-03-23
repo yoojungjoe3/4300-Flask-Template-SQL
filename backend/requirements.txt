@@ -20,4 +20,4 @@ SQLAlchemy==1.4.46
 typing_extensions==4.5.0
 Werkzeug==2.2.2
 nltk==3.5
-numpy==2.4
+numpy==2.2.4
