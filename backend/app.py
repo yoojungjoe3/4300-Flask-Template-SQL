@@ -33,7 +33,7 @@ def clean_text(text):
    """Convert text to lowercase and remove punctuation."""
    return re.sub(r'[^\w\s]', '', text.lower())
 
-Lists to hold extracted data from init.sql
+# Lists to hold extracted data from init.sql
 fandoms = []
 ships = []
 names = []
