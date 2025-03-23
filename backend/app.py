@@ -27,11 +27,11 @@ CORS(app)
 # HOMEPAGE
 @app.route("/")
 def home():
-   return render_template('base.html', Name="sample html")
+    return render_template('base.html', Name="sample html")
 
 def clean_text(text):
-   """Convert text to lowercase and remove punctuation."""
-   return re.sub(r'[^\w\s]', '', text.lower())
+    """Convert text to lowercase and remove punctuation."""
+    return re.sub(r'[^\w\s]', '', text.lower())
 
 # Lists to hold extracted data from init.sql
 fandoms = []
@@ -43,15 +43,15 @@ pattern = re.compile(r"VALUES\s*\(\s*'\"(.*?)\"',\s*'\"(.*?)\"',\s*'\"(.*?)\"',"
 
 # Read the init.sql file and populate the lists
 with open("init.sql", "r", encoding="utf-8") as file:
-   for line in file:
-       find = pattern.search(line)
-       if find:
-           names.append(find.group(1))
-           fandom_clean = clean_text(find.group(2))
-           ship_clean = clean_text(find.group(3))
-           # Append even if duplicate, if your ordering needs to match the SQL records.
-           fandoms.append(fandom_clean)
-           ships.append(ship_clean)
+    for line in file:
+        find = pattern.search(line)
+        if find:
+            names.append(find.group(1))
+            fandom_clean = clean_text(find.group(2))
+            ship_clean = clean_text(find.group(3))
+            # Append even if duplicate, if your ordering needs to match the SQL records.
+            fandoms.append(fandom_clean)
+            ships.append(ship_clean)
 
 def vector_search(query):
     """
@@ -59,11 +59,10 @@ def vector_search(query):
     Also prints the top two fanfic titles.
     Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
     """
-
     # Clean and prepare the query
     words = clean_text(query).split()
     query_text = " ".join(words)
-    
+   
     vectorizer = TfidfVectorizer()
 
     # Compare query to fandoms
@@ -79,22 +78,22 @@ def vector_search(query):
     query_vector_ships = tfidf_matrix_ships[-1]
     candidate_vectors_ships = tfidf_matrix_ships[:-1]
     similarities_ships = cosine_similarity(query_vector_ships, candidate_vectors_ships).flatten()
-    
+   
     # Combine the similarity scores element-wise
     combined_similarities = numpy.array(similarities_fandoms) + numpy.array(similarities_ships)
     total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    
+   
     # Sort keys (record indices) by similarity score (highest first)
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
-    
+   
     # Get the keys for the highest and second-highest scores
     highest_key = sorted_keys[0]
     second_highest_key = sorted_keys[1]
-    
+   
     # Adjust index for names list (keys start at 1, list is zero-indexed)
     top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
     second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
-    
+   
     return total_sim_dict, top_fic, second_fic
 
 def sql_search(text):
@@ -108,59 +107,55 @@ def sql_search(text):
     return [dict(zip(keys, record)) for record in data]
 
 # SEARCHING FOR FICS PAGE
+# @app.route("/fics")
+# def fics_search():
+#     # Get the user's query (using the parameter "Name")
+#     user_query = request.args.get("Name")
+#     if not user_query:
+#         return json.dumps({"error": "Missing query parameter."})
+   
+#     # Get vector-based similarity scores
+#     sim_dict = vector_search(user_query)
+   
+#     # Get SQL search results (if combining with vector search)
+#     results = sql_search(user_query)
+   
+#     # Attach the similarity score to each SQL result based on record position.
+#     # NOTE: Ensure the ordering here matches the ordering in your vector search.
+#     for i, record in enumerate(results):
+#         record["similarity"] = sim_dict.get(i + 1, 0)
+   
+#     # Optionally sort the results by similarity (highest first)
+#     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+
+#     sim_dict, top_fic, second_fic = vector_search(user_query)
+   
+#     # Render the results in the HTML template
+#     return render_template("results.html",
+#                            results=results_sorted,
+#                            top_fic=top_fic,
+#                            second_fic=second_fic)
+
 @app.route("/fics")
 def fics_search():
-    # Get the user's query (using the parameter "Name")
     user_query = request.args.get("Name")
     if not user_query:
-        return json.dumps({"error": "Missing query parameter."})
-    
-    # Get vector-based similarity scores
-    sim_dict = vector_search(user_query)
-    
-    # Get SQL search results (if combining with vector search)
+        return json.dumps({"error": "Missing query parameter."}), 400
+
+    sim_dict, top_fic, second_fic = vector_search(user_query)
     results = sql_search(user_query)
-    
-    # Attach the similarity score to each SQL result based on record position.
-    # NOTE: Ensure the ordering here matches the ordering in your vector search.
+   
     for i, record in enumerate(results):
         record["similarity"] = sim_dict.get(i + 1, 0)
-    
-    # Optionally sort the results by similarity (highest first)
+   
     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
-
-    
-    
-    sim_dict, top_fic, second_fic = vector_search(user_query)
-    
-    # Render the results in the HTML template
-    return render_template("results.html", 
-                           results=results_sorted, 
-                           top_fic=top_fic, 
-                           second_fic=second_fic)
-
-@app.route("/fics")
-def fics_search():
-   user_query = request.args.get("Name")
-   if not user_query:
-       return json.dumps({"error": "Missing query parameter."}), 400
-
-   sim_dict, top_fic, second_fic = vector_search(user_query)
-   results = sql_search(user_query)
-    
-   for i, record in enumerate(results):
-       record["similarity"] = sim_dict.get(i + 1, 0)
-    
-   results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
-    
-   response = {
-       "results": results_sorted,
-       "top_fic": top_fic,
-       "second_fic": second_fic,
-   }
-   return json.dumps(response), 200, {"Content-Type": "application/json"}
+   
+    response = {
+        "results": results_sorted,
+        "top_fic": top_fic,
+        "second_fic": second_fic,
+    }
+    return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
-   app.run(debug=True, host="0.0.0.0", port=5000)
-
-
+    app.run(debug=True, host="0.0.0.0", port=5000)
