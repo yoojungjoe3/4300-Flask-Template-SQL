@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Set ROOT_PATH for linking with all your files.
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
-Database credentials (adjust if needed)
+# Database credentials (adjust if needed)
 LOCAL_MYSQL_USER = "root"
 LOCAL_MYSQL_USER_PASSWORD = "quillquest"
 LOCAL_MYSQL_PORT = 3306
