@@ -29,9 +29,9 @@ CORS(app)
 def home():
     return render_template('base.html', Name="sample html")
 
-def clean_text(text):
+def clean_text(user_query):
     """Convert text to lowercase and remove punctuation."""
-    return re.sub(r'[^\w\s]', '', text.lower())
+    return re.sub(r'[^\w\s]', '', user_query.lower())
 
 # Lists to hold extracted data from init.sql
 fandoms = []
@@ -53,14 +53,14 @@ with open("init.sql", "r", encoding="utf-8") as file:
             fandoms.append(fandom_clean)
             ships.append(ship_clean)
 
-def vector_search(query):
+def vector_search(user_query):
     """
     Compute combined similarity scores for the query against both fandoms and ships.
     Also prints the top two fanfic titles.
     Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
     """
     # Clean and prepare the query
-    words = clean_text(query).split()
+    words = clean_text(user_query).split()
     query_text = " ".join(words)
    
     vectorizer = TfidfVectorizer()
@@ -96,15 +96,15 @@ def vector_search(query):
    
     return total_sim_dict, top_fic, second_fic
 
-def sql_search(text):
-    """
-    Perform an SQL search using the LIKE operator.
-    This is a sample function. Adjust it as needed to combine with vector search results.
-    """
-    query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
-    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
-    data = mysql_engine.query_selector(query_sql)
-    return [dict(zip(keys, record)) for record in data]
+# def sql_search(text):
+#     """
+#     Perform an SQL search using the LIKE operator.
+#     This is a sample function. Adjust it as needed to combine with vector search results.
+#     """
+#     query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
+#     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
+#     data = mysql_engine.query_selector(query_sql)
+#     return [dict(zip(keys, record)) for record in data]
 
 # SEARCHING FOR FICS PAGE
 # @app.route("/fics")
@@ -143,19 +143,19 @@ def fics_search():
         return json.dumps("Please input a query :)"), 400
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
-    results = sql_search(user_query)
+    # results = sql_search(user_query)
    
-    for i, record in enumerate(results):
-        record["similarity"] = sim_dict.get(i + 1, 0)
+    # for i, record in enumerate(results):
+    #     record["similarity"] = sim_dict.get(i + 1, 0)
    
-    results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    # results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
    
     response = {
-        "results": results_sorted,
+        # "results": results_sorted,
         "top_fic": top_fic,
         "second_fic": second_fic,
     }
-    return "test",json.dumps(response), 200, {"Content-Type": "application/json"}
+    return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
