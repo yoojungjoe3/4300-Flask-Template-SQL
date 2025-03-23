@@ -24,7 +24,7 @@ mysql_engine.load_file_into_db()
 app = Flask(__name__)
 CORS(app)
 
-HOMEPAGE
+# HOMEPAGE
 @app.route("/")
 def home():
    return render_template('base.html', Name="sample html")
@@ -129,6 +129,8 @@ def fics_search():
     # Optionally sort the results by similarity (highest first)
     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
 
+    
+    
     sim_dict, top_fic, second_fic = vector_search(user_query)
     
     # Render the results in the HTML template
