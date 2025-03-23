@@ -26,5 +26,5 @@ table_name = "quillquestdb"  # Your MySQL table name
 
 #print(f"SQL INSERT file '{sql_file}' created successfully with no duplicates.")
 COPY quillquestdb(Name, Fandom, Ships, Rating, Link, Review, Abstract)
-FROM '/workspaces/4300-Flask-Template-SQL/backend/DataSet.csv'
+FROM 'backend/csv_to_sql.py'
 WITH (FORMAT csv, HEADER true);
