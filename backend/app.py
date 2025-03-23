@@ -112,7 +112,7 @@ def sql_search(text):
 #     # Get the user's query (using the parameter "Name")
 #     user_query = request.args.get("Name")
 #     if not user_query:
-#         return json.dumps({"error": "Missing query parameter."})
+#         return json.dumps("Please input a query :)")
    
 #     # Get vector-based similarity scores
 #     sim_dict = vector_search(user_query)
