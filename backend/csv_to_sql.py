@@ -6,22 +6,25 @@ sql_file = "init.sql"
 table_name = "quillquestdb"  # Your MySQL table name
 
 # Load CSV
-df = pd.read_csv(csv_file)
+#df = pd.read_csv(csv_file)
 
 # Remove leading/trailing spaces and convert column names to lowercase
-df.columns = df.columns.str.strip()
+#df.columns = df.columns.str.strip()
 
 # Ensure unique rows before generating SQL
-df = df.drop_duplicates()
+#df = df.drop_duplicates()
 
 # Generate INSERT statements
-insert_sql = ""
-for _, row in df.iterrows():
-    values = "', '".join(map(str, row.tolist()))  # Convert row values to strings
-    insert_sql += f"INSERT INTO `{table_name}` ({', '.join(df.columns)}) VALUES ('{values}');\n"
+#insert_sql = ""
+#for _, row in df.iterrows():
+#    values = "', '".join(map(str, row.tolist()))  # Convert row values to strings
+#    insert_sql += f"INSERT INTO `{table_name}` ({', '.join(df.columns)}) VALUES ('{values}');\n"
 
 # Save to SQL file
-with open(sql_file, "w", encoding="utf-8") as f:
-    f.write(insert_sql)
+#with open(sql_file, "w", encoding="utf-8") as f:
+#    f.write(insert_sql)
 
-print(f"SQL INSERT file '{sql_file}' created successfully with no duplicates.")
+#print(f"SQL INSERT file '{sql_file}' created successfully with no duplicates.")
+COPY quillquestdb(Name, Fandom, Ships, Rating, Link, Review, Abstract)
+FROM '/workspaces/4300-Flask-Template-SQL/backend/DataSet.csv'
+WITH (FORMAT csv, HEADER true);
