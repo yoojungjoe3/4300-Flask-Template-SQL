@@ -24,3 +24,5 @@ with open(sql_file, "w") as f:
     f.write(load_command)
 
 print(f"MySQL LOAD DATA command written to {sql_file}")
+
+#Run: mysql -u your_user -p your_database < init.sql
