@@ -153,10 +153,10 @@ def sql_search(text):
     Perform an SQL search using the LIKE operator.
     This is a sample function. Adjust it as needed to combine with vector search results.
     """
-   query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
-   keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
-   data = mysql_engine.query_selector(query_sql)
-   return [dict(zip(keys, record)) for record in data]
+    query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
+    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
+    data = mysql_engine.query_selector(query_sql)
+    return [dict(zip(keys, record)) for record in data]
 
 # SEARCHING FOR FICS PAGE
 @app.route("/fics")
