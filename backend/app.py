@@ -1,7 +1,7 @@
 import json
 import os
 import re
-import numpy as np
+import numpy
 from flask import Flask, render_template, request
 from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
@@ -80,7 +80,7 @@ def vector_search(query):
     similarities_ships = cosine_similarity(query_vector_ships, candidate_vectors_ships).flatten()
     
     # Combine the similarity scores element-wise
-    combined_similarities = np.array(similarities_fandoms) + np.array(similarities_ships)
+    combined_similarities = numpy.array(similarities_fandoms) + numpy.array(similarities_ships)
     total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
     
     # Sort keys (record indices) by similarity score (highest first)
