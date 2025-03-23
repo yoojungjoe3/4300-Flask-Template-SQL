@@ -140,7 +140,7 @@ def sql_search(text):
 def fics_search():
     user_query = request.args.get("Name")
     if not user_query:
-        return json.dumps({"error": "Missing query parameter."}), 400
+        return json.dumps("Please input a query :)"), 400
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
     results = sql_search(user_query)
