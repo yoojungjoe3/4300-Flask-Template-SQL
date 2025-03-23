@@ -1,5 +1,5 @@
-LOAD DATA LOCAL INFILE '/workspaces/4300-Flask-Template-SQL/DataSet.csv'
-INTO TABLE quillquestdb
+LOAD DATA INFILE '/workspaces/4300-Flask-Template-SQL/DataSet.csv'
+INTO TABLE fanfics
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
