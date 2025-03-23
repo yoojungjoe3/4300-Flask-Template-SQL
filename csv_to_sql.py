@@ -1,6 +1,6 @@
 import os
 
-csv_filename = "DataSet.csv"
+csv_filename = "DataSet_clean.csv"
 sql_filename = "init.sql"
 table_name = "fanfics"
 
@@ -25,3 +25,5 @@ print(f"CSV copied to {secure_csv_path}")
 print(f"SQL file written to {sql_filename}")
 
 SECURE_DIR = /var/lib/mysql-files/
+
+#To go into sql: sudo mysql -D quillquestdb

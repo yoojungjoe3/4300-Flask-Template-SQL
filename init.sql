@@ -1,4 +1,4 @@
-LOAD DATA INFILE '/workspaces/4300-Flask-Template-SQL/DataSet.csv'
+LOAD DATA INFILE '/var/lib/mysql-files/DataSet_clean.csv'
 INTO TABLE fanfics
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'

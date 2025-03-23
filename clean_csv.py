@@ -1,20 +1,27 @@
-import csv
 import re
+import csv
 
-with open("DataSet.csv", "r", encoding="utf-8") as infile, \
-     open("DataSet_clean.csv", "w", newline='', encoding="utf-8") as outfile:
+input_path = "DataSet.csv"
+output_path = "DataSet_clean.csv"
 
+# This regex handles quoted fields with commas and inner quotes
+pattern = re.compile(r'"((?:[^"]|"")*?)"|([^,]+)')
+
+def extract_fields(line):
+    fields = []
+    for match in pattern.finditer(line):
+        value = match.group(1) or match.group(2)
+        if value is not None:
+            value = value.replace('""', '"').strip()
+            fields.append(value)
+    return fields[:7]  # Return only first 7 fields
+
+with open(input_path, "r", encoding="utf-8") as infile, \
+     open(output_path, "w", newline='', encoding="utf-8") as outfile:
+    
     writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
-
     for line in infile:
-        # Step 1: Remove triple quotes → single quotes
-        line = re.sub(r'""+"', '"', line)
-
-        # Step 2: Strip leading/trailing spaces or newlines
-        line = line.strip()
-
-        # Step 3: Split by commas
-        row = next(csv.reader([line]))
-
-        # Step 4: Trim to 7 columns max
-        writer.writerow(row[:7])
+        if line.strip():  # skip empty lines
+            fields = extract_fields(line)
+            if len(fields) == 7:
+                writer.writerow(fields)
