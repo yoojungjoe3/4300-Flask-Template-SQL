@@ -38,11 +38,11 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 # put all the fandoms in fandom
-cursor.execute("SELECT Fandom FROM kardashiandb;")
+cursor.execute("SELECT Fandom FROM fics;")
 fandoms = [row[0] for row in cursor.fetchall()]  # Populate the list directly
 
 # Fetch ships
-cursor.execute("SELECT Ship(s) FROM kardashiandb;")
+cursor.execute("SELECT Ship(s) FROM fics;")
 ships = [row[0] for row in cursor.fetchall()]
 
 # Close connection
