@@ -139,7 +139,7 @@ def sql_search(text):
 @app.route("/fics")
 def fics_search():
     user_query = request.args.get("Name")
-    print("pls: " + str(user_query))
+    console.log("pls: " + str(user_query))
     # user_query = "harry"
     if not user_query:
         return json.dumps("Please input a query :)"), 400
