@@ -27,9 +27,9 @@ CORS(app)
 # HOMEPAGE
 @app.route("/")
 def home():
-    x = render_template('base.html', Name="sample html")
-    fics_search()
-    return x
+    # x = render_template('base.html', Name="sample html")
+    # fics_search()
+    return render_template('base.html', Name="sample html")
 
 def clean_text(user_query):
     """Convert text to lowercase and remove punctuation."""
