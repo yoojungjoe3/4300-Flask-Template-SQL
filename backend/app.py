@@ -47,7 +47,7 @@ pattern = re.compile(r"VALUES\s*\(\s*'\"(.*?)\"',\s*'\"(.*?)\"',\s*'\"(.*?)\"',"
 # init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 # Read the init.sql file and populate the lists
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "../init.sql"), "r", encoding="utf-8") as file:
+with open(os.path.join("..", "init.sql"), "r", encoding="utf-8") as file:
     for line in file:
         find = pattern.search(line)
         if find:
