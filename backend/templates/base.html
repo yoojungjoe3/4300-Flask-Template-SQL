@@ -60,7 +60,6 @@
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
         .then(response => {
-          headers: { "X-Requested-With"; "XMLHttpRequest" }
           if (!response.ok) {
             // Optionally handle HTTP errors
             return response.text().then(text => {
