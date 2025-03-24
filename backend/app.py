@@ -27,6 +27,7 @@ CORS(app)
 # HOMEPAGE
 @app.route("/")
 def home():
+    fics_search()
     return render_template('base.html', Name="sample html")
 
 def clean_text(user_query):
@@ -136,7 +137,7 @@ def sql_search(text):
 #                            top_fic=top_fic,
 #                            second_fic=second_fic)
 
-@app.route("/")
+@app.route("/fics")
 def fics_search():
     console.log("help")
     user_query = request.args.get("Name")
