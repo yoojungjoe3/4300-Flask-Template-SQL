@@ -7,7 +7,7 @@ from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import mysql.connector
+import pymysql
 
 # Set ROOT_PATH for linking with all your files.
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
@@ -36,15 +36,6 @@ conn = mysql.connector.connect(
     LOCAL_MYSQL_DATABASE = "kardashiandb"
 )
 cursor = conn.cursor()
-
-# put all the fandoms in fandom
-#cursor.execute("SELECT Fandom FROM kardashiandb;")
-#fandoms = [row[0] for row in cursor.fetchall()]  # Populate the list directly
-
-# Fetch ships
-#cursor.execute("SELECT Ship(s) FROM kardashiandb;")
-#ships = [row[0] for row in cursor.fetchall()]
-# Close connection
 
 # Get total number of rows in the fics table
 cursor.execute("SELECT COUNT(*) FROM fics")
