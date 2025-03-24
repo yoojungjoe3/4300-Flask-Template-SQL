@@ -42,7 +42,7 @@ cursor.execute("SELECT Fandom FROM kardashiandb;")
 fandoms = [row[0] for row in cursor.fetchall()]  # Populate the list directly
 
 # Fetch ships
-cursor.execute("SELECT ship FROM kardashiandb;")
+cursor.execute("SELECT Ship(s) FROM kardashiandb;")
 ships = [row[0] for row in cursor.fetchall()]
 
 # Close connection
