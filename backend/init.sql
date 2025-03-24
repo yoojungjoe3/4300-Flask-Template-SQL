@@ -69,7 +69,6 @@ INSERT INTO `kardashiandb` (Name, Fandom, Ship(s), Rating, Link, Review, Abstrac
  INSERT INTO `kardashiandb` (Name, Fandom, Ship(s), Rating, Link, Review, Abstract) VALUES ('"The Unrecorded Hours"', '"Hunger Games"', '"KatnissXPeeta"', '3861', '"https://archiveofourown.org/works/643235"', '"This is one of my favorite stories of all time."', '"Katniss and Peeta in the weeks and months after the war."');
 
 -- GRANT ALL PRIVILEGES ON kardashiandb.* TO 'admin'@'%' IDENTIFIED BY 'admin';
-
 -- FLUSH PRIVILEGES;
 
 --Optimized code:
