@@ -2,7 +2,7 @@ import pandas as pd
 
 csv_file = "DataSet.csv"
 sql_file = "init.sql"
-table_name = "kardashiandb"  # Your MySQL table name
+table_name = "quillquestdb"  # Your MySQL table name
  
  # Load CSV
  df = pd.read_csv(csv_file)
@@ -51,4 +51,4 @@ table_name = "kardashiandb"  # Your MySQL table name
 
 #SECURE_DIR = /var/lib/mysql-files/
 
-#To go into sql: sudo mysql -D kardashiandb
+#To go into sql: sudo mysql -D quillquestdb
