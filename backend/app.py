@@ -145,7 +145,7 @@ def fics_search():
     print("pls: " + str(user_query))
     # user_query = "harry"
     if not user_query:
-        return jsonify({"error": "Please input a query :)"}), 400
+        return ("Please input a query :)"), 400
 
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
