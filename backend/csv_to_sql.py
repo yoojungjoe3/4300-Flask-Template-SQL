@@ -1,7 +1,7 @@
 import pandas as pd
 
-csv_file = "DataSet.csv"
-sql_file = "init.sql"
+csv_file = "../DataSet.csv"
+sql_file = "../init.sql"
 table_name = "quillquestdb"  # Your MySQL table name
  
  # Load CSV
