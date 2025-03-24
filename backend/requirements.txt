@@ -22,4 +22,4 @@ Werkzeug==2.2.2
 nltk==3.5
 numpy==2.2.4
 scikit-learn==1.6.0
-mysqlx-connector-python ==9.2.0
+
