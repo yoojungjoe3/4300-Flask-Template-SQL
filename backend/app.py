@@ -138,7 +138,7 @@ def vector_search(user_query):
 
 @app.route("/fics")
 def fics_search():
-    user_query = request.args.get("Name")
+    user_query = request.args.get("UserInput")
     if not user_query:
         return json.dumps("Please input a query :)"), 400
 
