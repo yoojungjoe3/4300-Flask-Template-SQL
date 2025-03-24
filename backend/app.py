@@ -29,11 +29,19 @@ CORS(app)
 # do it w/o the cursor!!!
 
 # Connect to the database
-conn = mysql.connector.connect(
-    LOCAL_MYSQL_USER = "admin"
-    LOCAL_MYSQL_USER_PASSWORD = "admin"
-    LOCAL_MYSQL_PORT = 3306
-    LOCAL_MYSQL_DATABASE = "kardashiandb"
+#conn = mysql.connector.connect(
+#    LOCAL_MYSQL_USER = "admin"
+#    LOCAL_MYSQL_USER_PASSWORD = "admin"
+#    LOCAL_MYSQL_PORT = 3306
+#    LOCAL_MYSQL_DATABASE = "kardashiandb"
+#)
+conn = pymysql.connect(
+    #host='localhost',
+    user='admin',
+    password='admin',
+    database='kardashiandb',
+    #charset='utf8mb4',
+    cursorclass=pymysql.cursors.Cursor
 )
 cursor = conn.cursor()
 
