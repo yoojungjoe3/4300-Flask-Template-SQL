@@ -152,11 +152,12 @@ def fics_search():
     # results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
    
     response = {
-        # "results": results_sorted,
+        "results": results_sorted,
         "top_fic": top_fic,
         "second_fic": second_fic,
     }
-    return json.dumps(response), 200, {"Content-Type": "application/json"}
+    return render_template("results.html", response)
+    # return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
