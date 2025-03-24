@@ -61,6 +61,8 @@
       fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
         .then(response => {
           console.log("just fetched");
+          console.log(response.text())
+          console.log(response.ok)
           if (!response.ok) {
             // Optionally handle HTTP errors
             return response.text().then(text => {
