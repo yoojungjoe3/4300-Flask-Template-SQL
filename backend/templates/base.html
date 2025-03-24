@@ -60,6 +60,7 @@
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
         .then(response => {
+          //this statement gets printed
           console.log("just fetched");
           // console.log(response.text())
           // console.log(response.ok)
@@ -72,6 +73,7 @@
           return response.json();
         })
         .then(data => {
+          //we never get to this statement...
           console.log("end fetched");
           // Display the top fanfics first
           if (data.top_fic) {
