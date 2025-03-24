@@ -25,6 +25,9 @@ mysql_engine.load_file_into_db()
 app = Flask(__name__)
 CORS(app)
 
+
+# do it w/o the cursor!!!
+
 # Connect to the database
 conn = mysql.connector.connect(
     LOCAL_MYSQL_USER = "admin"
@@ -35,7 +38,7 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 # put all the fandoms in fandom
-cursor.execute("SELECT fandom FROM kardashiandb;")
+cursor.execute("SELECT Fandom FROM kardashiandb;")
 fandoms = [row[0] for row in cursor.fetchall()]  # Populate the list directly
 
 # Fetch ships
