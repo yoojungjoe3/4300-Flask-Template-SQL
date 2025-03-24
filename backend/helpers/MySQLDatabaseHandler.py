@@ -8,8 +8,8 @@ class MySQLDatabaseHandler(object):
     def __init__(self,MYSQL_USER,MYSQL_USER_PASSWORD,MYSQL_PORT,MYSQL_DATABASE,MYSQL_HOST = "localhost"):
         
         self.MYSQL_HOST = os.environ['DB_NAME'] if MySQLDatabaseHandler.IS_DOCKER else MYSQL_HOST
-        self.MYSQL_USER = "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER
-        self.MYSQL_USER_PASSWORD = "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER_PASSWORD
+        self.MYSQL_USER = "root" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER
+        self.MYSQL_USER_PASSWORD = "quillquest" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER_PASSWORD
         self.MYSQL_PORT = 3306 if MySQLDatabaseHandler.IS_DOCKER else MYSQL_PORT
         self.MYSQL_DATABASE = "quillquestdb" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_DATABASE
         self.engine = self.validate_connection()
