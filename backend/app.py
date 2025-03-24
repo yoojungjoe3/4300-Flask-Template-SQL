@@ -96,15 +96,15 @@ def vector_search(user_query):
    
     return total_sim_dict, top_fic, second_fic
 
-# def sql_search(text):
-#     """
-#     Perform an SQL search using the LIKE operator.
-#     This is a sample function. Adjust it as needed to combine with vector search results.
-#     """
-#     query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
-#     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
-#     data = mysql_engine.query_selector(query_sql)
-#     return [dict(zip(keys, record)) for record in data]
+def sql_search(text):
+    """
+    Perform an SQL search using the LIKE operator.
+    This is a sample function. Adjust it as needed to combine with vector search results.
+    """
+    query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
+    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
+    data = mysql_engine.query_selector(query_sql)
+    return [dict(zip(keys, record)) for record in data]
 
 # SEARCHING FOR FICS PAGE
 # @app.route("/fics")
@@ -138,8 +138,8 @@ def vector_search(user_query):
 
 @app.route("/fics")
 def fics_search():
-    # user_query = request.values.get("Name")
-    user_query = "harry"
+    user_query = request.args.get("Name")
+    # user_query = "harry"
     if not user_query:
         return json.dumps("Please input a query :)"), 400
 
@@ -157,7 +157,14 @@ def fics_search():
         "top_fic": top_fic,
         "second_fic": second_fic,
     }
-    return render_template("base.html", results= results_sorted ,top_fic= top_fic , second_fic=second_fic)
+
+    # Return JSON when requested via fetch
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return json.dumps(response), 200, {"Content-Type": "application/json"}
+    else:
+        return render_template("results.html", results=results_sorted, top_fic=top_fic, second_fic=second_fic)
+
+    #return render_template("base.html", results= results_sorted ,top_fic= top_fic , second_fic=second_fic)
     # return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
