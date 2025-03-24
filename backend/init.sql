@@ -68,8 +68,8 @@ INSERT INTO `quillquestdb` (Name, Fandom, Ship(s), Rating, Link, Review, Abstrac
  INSERT INTO `quillquestdb` (Name, Fandom, Ship(s), Rating, Link, Review, Abstract) VALUES ('"Time Is Never Found Again... Or Is It?"', '"Hunger Games"', '"KatnissXPeeta"', '5376', '"https://archiveofourown.org/works/47095048/chapters/118651975"', '"I love a time travel fix-it and I am excited to see where this one goes"', '"And when she opens her eyes again, she found she is not tucked up against the greenhouse glass walls. No. She was in District Twelve, with her little sister tucked into her side. Katniss, after talking to Snow in his rose garden, finds herself somehow back in her childhood home. She has seven months until she enters the arena for the 74th annual Hunger Games, along with the love of her life, who when she last saw him, was still struggling not to kill her, just perfect. A time-travel fix it fic that would not leave my brain. We are in for a wild ride with this one."');
  INSERT INTO `quillquestdb` (Name, Fandom, Ship(s), Rating, Link, Review, Abstract) VALUES ('"The Unrecorded Hours"', '"Hunger Games"', '"KatnissXPeeta"', '3861', '"https://archiveofourown.org/works/643235"', '"This is one of my favorite stories of all time."', '"Katniss and Peeta in the weeks and months after the war."');
 
-GRANT ALL PRIVILEGES ON quillquestdb.* TO 'admin'@'%';
-FLUSH PRIVILEGES;
+-- GRANT ALL PRIVILEGES ON quillquestdb.* TO 'admin'@'%';
+-- FLUSH PRIVILEGES;
 
 --Optimized code:
 --LOAD DATA INFILE '/var/lib/mysql-files/DataSet_clean.csv'
