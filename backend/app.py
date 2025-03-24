@@ -15,7 +15,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 LOCAL_MYSQL_USER = "admin"
 LOCAL_MYSQL_USER_PASSWORD = "admin"
 LOCAL_MYSQL_PORT = 3306
-LOCAL_MYSQL_DATABASE = "quillquestdb"
+LOCAL_MYSQL_DATABASE = "kardashiandb"
 
 # Initialize database handler and load init.sql into the database
 mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER, LOCAL_MYSQL_USER_PASSWORD, LOCAL_MYSQL_PORT, LOCAL_MYSQL_DATABASE)
