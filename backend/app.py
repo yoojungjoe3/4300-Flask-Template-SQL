@@ -144,12 +144,12 @@ def fics_search():
 
 
     sim_dict, top_fic, second_fic = vector_search(user_query)
-    # results = sql_search(user_query)
+    results = sql_search(user_query)
    
-    # for i, record in enumerate(results):
-    #     record["similarity"] = sim_dict.get(i + 1, 0)
+    for i, record in enumerate(results):
+         record["similarity"] = sim_dict.get(i + 1, 0)
    
-    # results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+     results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
    
     response = {
         "results": results_sorted,
