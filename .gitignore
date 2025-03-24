@@ -17,3 +17,4 @@ dist/
 build/
 *.egg-info/
 helpers/*
+/backend/myvenv4300
