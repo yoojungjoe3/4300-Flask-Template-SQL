@@ -50,15 +50,15 @@
         // }
     function filterText(){
       // Clear previous results
-      const answerBox = document.getElementById("answer-box");
-      answerBox.innerHTML = "";
-
+      //const answerBox = document.getElementById("answer-box");
+      //answerBox.innerHTML = "";
+      document.getElementById("answer-box").innerHTML = ""
       // Get the user's search text
       const searchText = document.getElementById("filter-text-val").value;
       console.log(searchText);
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
-      fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
+      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
         .then((response) =>  response.json())
         .then(data => {
           //we never get to this statement...
