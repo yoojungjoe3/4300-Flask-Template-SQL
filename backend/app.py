@@ -136,7 +136,7 @@ def sql_search(text):
 #                            top_fic=top_fic,
 #                            second_fic=second_fic)
 
-@app.route("/fics")
+@app.route("/")
 def fics_search():
     console.log("help")
     user_query = request.args.get("Name")
