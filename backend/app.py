@@ -138,7 +138,8 @@ def vector_search(user_query):
 
 @app.route("/fics")
 def fics_search():
-    user_query = request.values.get("Name")
+    # user_query = request.values.get("Name")
+    user_query = "harry"
     if not user_query:
         return json.dumps("Please input a query :)"), 400
 
@@ -156,7 +157,7 @@ def fics_search():
         "top_fic": top_fic,
         "second_fic": second_fic,
     }
-    return render_template("base.html", results= results_sorted,top_fic= top_fic , second_fic=second_fic)
+    return render_template("base.html", results= results_sorted ,top_fic= top_fic , second_fic=second_fic)
     # return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
