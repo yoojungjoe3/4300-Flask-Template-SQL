@@ -59,8 +59,8 @@
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
-        console.log("just fetched");
         .then(response => {
+          console.log("just fetched");
           if (!response.ok) {
             // Optionally handle HTTP errors
             return response.text().then(text => {
@@ -69,8 +69,8 @@
           }
           return response.json();
         })
-        console.log("end fetched");
         .then(data => {
+          console.log("end fetched");
           // Display the top fanfics first
           if (data.top_fic) {
             const topDiv = document.createElement("div");
