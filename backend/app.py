@@ -149,7 +149,7 @@ def fics_search():
     # for i, record in enumerate(results):
     #     record["similarity"] = sim_dict.get(i + 1, 0)
    
-    # results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
    
     response = {
         "results": results_sorted,
