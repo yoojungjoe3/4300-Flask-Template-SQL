@@ -156,7 +156,7 @@ def fics_search():
         "top_fic": top_fic,
         "second_fic": second_fic,
     }
-    return render_template("results.html", results= results_sorted,top_fic= top_fic , second_fic=second_fic)
+    return render_template("base.html", results= results_sorted,top_fic= top_fic , second_fic=second_fic)
     # return json.dumps(response), 200, {"Content-Type": "application/json"}
 
 if 'DB_NAME' not in os.environ:
