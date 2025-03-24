@@ -7,6 +7,7 @@ from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import mysql.connector
 
 # Set ROOT_PATH for linking with all your files.
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
@@ -24,6 +25,26 @@ mysql_engine.load_file_into_db()
 app = Flask(__name__)
 CORS(app)
 
+# Connect to the database
+conn = mysql.connector.connect(
+    LOCAL_MYSQL_USER = "admin"
+    LOCAL_MYSQL_USER_PASSWORD = "admin"
+    LOCAL_MYSQL_PORT = 3306
+    LOCAL_MYSQL_DATABASE = "kardashiandb"
+)
+cursor = conn.cursor()
+
+# put all the fandoms in fandom
+cursor.execute("SELECT fandom FROM kardashiandb;")
+fandoms = [row[0] for row in cursor.fetchall()]  # Populate the list directly
+
+# Fetch ships
+cursor.execute("SELECT ship FROM kardashiandb;")
+ships = [row[0] for row in cursor.fetchall()]
+
+# Close connection
+conn.close()
+
 # HOMEPAGE
 @app.route("/")
 def home():
@@ -35,29 +56,29 @@ def clean_text(user_query):
     """Convert text to lowercase and remove punctuation."""
     return re.sub(r'[^\w\s]', '', user_query.lower())
 
-# Lists to hold extracted data from init.sql
-fandoms = []
-ships = []
-names = []
+# # Lists to hold extracted data from init.sql
+# fandoms = []
+# ships = []
+# names = []
 
 # Regex to capture Name, Fandom, and Ship(s)
-pattern = re.compile(r"VALUES\s*\(\s*'\"(.*?)\"',\s*'\"(.*?)\"',\s*'\"(.*?)\"',")
+# pattern = re.compile(r"VALUES\s*\(\s*'\"(.*?)\"',\s*'\"(.*?)\"',\s*'\"(.*?)\"',")
 
 # current_dir = os.path.dirname(os.path.abspath(__file__))
 # init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 # Read the init.sql file and populate the lists
 
-with open(os.path.join(os.environ['ROOT_PATH'],'init.sql'), "r", encoding="utf-8") as file:
-    for line in file:
-        find = pattern.search(line)
-        if find:
-            names.append(find.group(1))
-            fandom_clean = clean_text(find.group(2))
-            ship_clean = clean_text(find.group(3))
-            # Append even if duplicate, if your ordering needs to match the SQL records.
-            fandoms.append(fandom_clean)
-            ships.append(ship_clean)
+# with open(os.path.join(os.environ['ROOT_PATH'],'init.sql'), "r", encoding="utf-8") as file:
+#     for line in file:
+#         find = pattern.search(line)
+#         if find:
+#             names.append(find.group(1))
+#             fandom_clean = clean_text(find.group(2))
+#             ship_clean = clean_text(find.group(3))
+#             # Append even if duplicate, if your ordering needs to match the SQL records.
+#             fandoms.append(fandom_clean)
+#             ships.append(ship_clean)
 
 def vector_search(user_query):
     """
