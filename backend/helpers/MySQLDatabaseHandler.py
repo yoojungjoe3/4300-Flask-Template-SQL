@@ -9,7 +9,7 @@ class MySQLDatabaseHandler(object):
         
         self.MYSQL_HOST = os.environ['DB_NAME'] if MySQLDatabaseHandler.IS_DOCKER else MYSQL_HOST
         self.MYSQL_USER = "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER
-        self.MYSQL_USER_PASSWORD =  "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER_PASSWORD
+        self.MYSQL_USER_PASSWORD = "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER_PASSWORD
         self.MYSQL_PORT = 3306 if MySQLDatabaseHandler.IS_DOCKER else MYSQL_PORT
         self.MYSQL_DATABASE = "kardashiandb" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_DATABASE
         self.engine = self.validate_connection()
@@ -44,4 +44,3 @@ class MySQLDatabaseHandler(object):
         sql_file_data = list(filter(lambda x:x != '',sql_file.read().split(";\n")))
         self.query_executor(sql_file_data)
         sql_file.close()
-
