@@ -35,38 +35,38 @@ CORS(app)
 #    LOCAL_MYSQL_PORT = 3306
 #    LOCAL_MYSQL_DATABASE = "kardashiandb"
 #)
-conn = pymysql.connect(
-    #host='localhost',
-    user='admin',
-    password='admin',
-    database='kardashiandb',
-    #charset='utf8mb4',
-    cursorclass=pymysql.cursors.Cursor
-)
-cursor = conn.cursor()
+#conn = pymysql.connect(
+#    #host='localhost',
+#    user='admin',
+#    password='admin',
+#    database='kardashiandb',
+#    #charset='utf8mb4',
+#    cursorclass=pymysql.cursors.Cursor
+#)
+#cursor = conn.cursor()
 
 # Get total number of rows in the fics table
-cursor.execute("SELECT COUNT(*) FROM fics")
-total_rows = cursor.fetchone()[0]
+#cursor.execute("SELECT COUNT(*) FROM fics")
+#total_rows = cursor.fetchone()[0]
 
 # Helper function to loop over a column
-def loop_over_column(column_name):
-    print(f"\n--- Values from column: {column_name} ---")
-    for i in range(total_rows):
-        cursor.execute(f"SELECT {column_name} FROM fics LIMIT 1 OFFSET %s", (i,))
-        result = cursor.fetchone()
-        if result:
-            print(result[0])
+#def loop_over_column(column_name):
+#    print(f"\n--- Values from column: {column_name} ---")
+#    for i in range(total_rows):
+#        cursor.execute(f"SELECT {column_name} FROM fics LIMIT 1 OFFSET %s", (i,))
+#        result = cursor.fetchone()
+#        if result:
+#            print(result[0])
 
 # Loop over each column
-columns = ['fandom', 'ships', 'name', 'rating', 'link', 'review', 'abstract']
+#columns = ['fandom', 'ships', 'name', 'rating', 'link', 'review', 'abstract']
 
-for col in columns:
-    loop_over_column(col)
+#for col in columns:
+#    loop_over_column(col)
 
 # Clean up
-cursor.close()
-conn.close()
+#cursor.close()
+#conn.close()
 # HOMEPAGE
 @app.route("/")
 def home():
