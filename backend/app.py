@@ -8,9 +8,10 @@ from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-import sqlalchemy as db 
-engine = db.create_engine("mysql+pymysql://admin:admin@4300showcase.infosci.cornell.edu/kardashiandb")
-cursor = engine.connect()
+from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
+# import sqlalchemy as db 
+# engine = db.create_engine("mysql+pymysql://admin:admin@4300showcase.infosci.cornell.edu/kardashiandb")
+# cursor = engine.connect()
 
 # Set ROOT_PATH for linking with all your files.
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
@@ -68,8 +69,9 @@ def vector_search(user_query):
 
 
     query = "SELECT Fandom, Ship(s) FROM fics;"
-    cursor.execute(query)
-    row = cursor.fetchall()
+    row = mysql_engine.query_selector(query)
+    # cursor.execute(query)
+    # row = cursor.fetchall()
     fandoms = [r[0] for r in row]
     ships = [r[1] for r in row]
     # fandoms = f"""SELECT Fandom FROM fics"""
