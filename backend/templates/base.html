@@ -62,8 +62,8 @@
         .then(response => {
            //this statement gets printed
            console.log("just fetched");
-           console.log("response: "+ response)
-           // console.log(response.ok)
+           console.log("response: "+ response.text())
+           console.log(response.ok)
            if (!response.ok) {
              // Optionally handle HTTP errors
              return response.text().then(text => {
