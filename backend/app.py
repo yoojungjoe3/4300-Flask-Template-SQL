@@ -188,6 +188,7 @@ def sql_search(text):
     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
     data = mysql_engine.query_selector(query_sql)
     return json.dumps([dict(zip(keys, record)) for record in data])
+    #return [dict(zip(keys, record)) for record in data]
 
 @app.route("/")
 def home():
