@@ -176,7 +176,7 @@ def vector_search(user_query):
     total_sim_dict = {}
     top_fic = "Hello"
     second_fic = "World"
-    return total_sim_dict, top_fic, second_fic
+    return {'total_sim_dict': total_sim_dict, 'top_fic': top_fic, 'second_fic': second_fic}
 
 @app.route("/")
 def home():
