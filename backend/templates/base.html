@@ -60,7 +60,7 @@
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
         // .then(response => {
-        .then((response => response.json())
+        .then((response => response.json()))
            //this statement gets printed
           //  console.log("just fetched");
           //  console.log("response: "+ response.text())
