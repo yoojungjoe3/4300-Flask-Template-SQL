@@ -16,7 +16,7 @@ cursor = engine.connect()
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
-LOCAL_MYSQL_USER = "admin"
+LOCAL_MYSQL_USER = "root"
 LOCAL_MYSQL_USER_PASSWORD = "admin"
 LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "kardashiandb"
