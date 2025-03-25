@@ -53,7 +53,7 @@ CORS(app)
 #             fandoms.append(fandom_clean)
 #             ships.append(ship_clean)
 
-def vector_search2(user_query):
+def vector_search(user_query):
     """
     Compute combined similarity scores for the query against both fandoms and ships.
     Also prints the top two fanfic titles.
@@ -172,11 +172,11 @@ def vector_search2(user_query):
 #     return json.dumps([dict(zip(keys, record)) for record in data])
 #     #return [dict(zip(keys, record)) for record in data]
 
-def vector_search(user_query):
-    total_sim_dict = {}
-    top_fic = "Hello"
-    second_fic = "World"
-    return {'total_sim_dict': total_sim_dict, 'top_fic': top_fic, 'second_fic': second_fic}
+# def vector_search(user_query):
+#     total_sim_dict = {}
+#     top_fic = "Hello"
+#     second_fic = "World"
+#     return {'total_sim_dict': total_sim_dict, 'top_fic': top_fic, 'second_fic': second_fic}
 
 @app.route("/")
 def home():
