@@ -79,12 +79,12 @@
           if (data.top_fic) {
             const topDiv = document.createElement("div");
             topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
-            answerBox.appendChild(topDiv);
+            answerBoxTemplate.appendChild(topDiv);
           }
           if (data.second_fic) {
             const secondDiv = document.createElement("div");
             secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
-            answerBox.appendChild(secondDiv);
+            answerBoxTemplate.appendChild(secondDiv);
           }
 
           // Then loop over the results and display them
@@ -96,14 +96,14 @@
                                     <em>${record.Abstract}</em>`;
               list.appendChild(listItem);
             });
-            answerBox.appendChild(list);
+            answerBoxTemplate.appendChild(list);
           } else {
-            answerBox.innerHTML = "<p>No results found.</p>";
+            answerBoxTemplate.innerHTML = "<p>No results found.</p>";
           }
         })
         .catch(error => {
           console.error("Fetch error:", error);
-          answerBox.innerHTML = `<p>Error: ${error.message}</p>`;
+          answerBoxTemplate.innerHTML = `<p>Error: ${error.message}</p>`;
         });
   }
  
