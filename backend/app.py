@@ -57,6 +57,7 @@ def vector_search(user_query):
     # Clean and prepare the query
     words = clean_text(user_query).split()
     query_words = " ".join(words)
+    print(query_words)
 
     #creating the lists
     fandoms = f"""SELECT Fandom FROM fics"""
@@ -91,6 +92,7 @@ def vector_search(user_query):
     # Combine fandom and ship similarities
     combined_similarities = combined_fandom_similarities + combined_ship_similarities
     total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
+    print(total_sim_dict)
 
     # Sort keys (record indices) by similarity score (highest first)
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
@@ -106,8 +108,9 @@ def vector_search(user_query):
     #print(total_sim_dict)
 
     # Print similarity values and top results
-    #print(f"Top result: {top_fic} with similarity score: {total_sim_dict[highest_key]}")
-    #print(f"Second result: {second_fic} with similarity score: {total_sim_dict[second_highest_key]}")
+    print(f"Top result: {top_fic} with similarity score: {total_sim_dict[highest_key]}")
+    print(f"Second result: {second_fic} with similarity score: {total_sim_dict[second_highest_key]}")
+
 
     return total_sim_dict, top_fic, second_fic
    
