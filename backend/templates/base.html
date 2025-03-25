@@ -76,12 +76,12 @@
           //we never get to this statement...
           console.log("end fetched");
           // Display the top fanfics first
-          if (data.top_fic) {
+          if (data.get(top_fic)) {
             const topDiv = document.createElement("div");
             topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
             answerBoxTemplate.appendChild(topDiv);
           }
-          if (data.second_fic) {
+          if (data.get(second_fic)) {
             const secondDiv = document.createElement("div");
             secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
             answerBoxTemplate.appendChild(secondDiv);
