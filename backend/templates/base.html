@@ -59,7 +59,19 @@
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
-        .then((response) =>  response.json())
+        .then(response => {
+           //this statement gets printed
+           console.log("just fetched");
+           // console.log(response.text())
+           // console.log(response.ok)
+           if (!response.ok) {
+             // Optionally handle HTTP errors
+             return response.text().then(text => {
+               throw new Error("Server error: " + text);
+             });
+           }
+           return response.json();
+        })
         .then(data => {
           //we never get to this statement...
           console.log("end fetched");
