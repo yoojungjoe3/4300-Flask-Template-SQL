@@ -68,7 +68,7 @@ def vector_search(user_query):
     # use cursor 
 
 
-    query = "SELECT Fandom, Ship(s) FROM fics;"
+    query = "SELECT Fandom, Ships FROM fics;"
     row = mysql_engine.query_selector(query)
     # cursor.execute(query)
     # row = cursor.fetchall()
@@ -167,7 +167,7 @@ def sql_search(text):
     This is a sample function. Adjust it as needed to combine with vector search results.
     """
     query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
-    keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
+    keys = ["Name", "Fandom", "Ships", "Rating", "Link", "Review", "Abstract"]
     data = mysql_engine.query_selector(query_sql)
     return json.dumps([dict(zip(keys, record)) for record in data])
     #return [dict(zip(keys, record)) for record in data]
