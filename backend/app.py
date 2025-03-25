@@ -103,7 +103,7 @@ def vector_search(user_query):
     query_text = " ".join(words)
 
     #creating the lists
-    fandom = f"""SELECT Fandom FROM fics"""
+    fandoms = f"""SELECT Fandom FROM fics"""
     ships = f"""SELECT Ship(s) FROM fics"""
    
     vectorizer = TfidfVectorizer()
