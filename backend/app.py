@@ -18,7 +18,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
 LOCAL_MYSQL_USER = "root"
-LOCAL_MYSQL_USER_PASSWORD = "admin"
+LOCAL_MYSQL_USER_PASSWORD = "bobbob"
 LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "kardashiandb"
 
@@ -180,6 +180,7 @@ def home():
 
 def clean_text(user_query):
     """Convert text to lowercase and remove punctuation."""
+    print(user_query)
     return re.sub(r'[^\w\s]', '', user_query.lower())
 
 @app.route("/fics")
