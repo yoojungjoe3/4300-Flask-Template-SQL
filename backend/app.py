@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 import sqlalchemy as db 
-engine = db.create_engine("mysql+pymysql://admin:admin@localhost/kardashiandb")
+engine = db.create_engine("mysql+pymysql://admin:admin@4300showcase.infosci.cornell.edu/kardashiandb")
 cursor = engine.connect()
 
 # Set ROOT_PATH for linking with all your files.
