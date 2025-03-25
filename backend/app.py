@@ -91,7 +91,7 @@ def vector_search(user_query):
     """
     # Clean and prepare the query
     words = clean_text(user_query).split()
-    query_text = " ".join(words)
+    query_words = " ".join(words)
 
     #creating the lists
     fandoms = f"""SELECT Fandom FROM fics"""
