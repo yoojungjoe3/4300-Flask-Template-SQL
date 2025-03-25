@@ -167,30 +167,31 @@ def clean_text(user_query):
 
 @app.route("/fics")
 def fics_search():
-    print("help")
+    #print("help")
     user_query = request.args.get("Name")
-    print("pls: " + str(user_query))
+    #print("pls: " + str(user_query))
     # user_query = "harry"
-    if not user_query:
-        return ("Please input a query :)"), 400
+    #if not user_query:
+    #    return ("Please input a query :)"), 400
 
 
-    sim_dict, top_fic, second_fic = vector_search(user_query)
-    results = sql_search(user_query)
+    #sim_dict, top_fic, second_fic = vector_search(user_query)
+    #results = sql_search(user_query)
    
-    for i, record in enumerate(results):
-        record["similarity"] = sim_dict.get(i + 1, 0)
+    #for i, record in enumerate(results):
+    #    record["similarity"] = sim_dict.get(i + 1, 0)
    
-    results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    #results_sorted = sorted(results, key=lambda x: x["similarity"], reverse=True)
    
-    response = {
-        "results": results_sorted,
-        "top_fic": top_fic,
-        "second_fic": second_fic,
-    }
+    #response = {
+    #    "results": results_sorted,
+    #    "top_fic": top_fic,
+    #    "second_fic": second_fic,
+    #}
 
     #return render_template("base.html", results= results_sorted ,top_fic= top_fic , second_fic=second_fic)
-    return json.dumps(response), 200, {"Content-Type": "application/json"}
+    #return json.dumps(response), 200, {"Content-Type": "application/json"}
+    return vector_search(user_query)
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
