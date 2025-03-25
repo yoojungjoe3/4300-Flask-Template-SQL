@@ -59,11 +59,12 @@
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
       fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
-        .then(response => {
+        // .then(response => {
+        .then((response => response.json())
            //this statement gets printed
-           console.log("just fetched");
-           console.log("response: "+ response.text())
-           console.log(response.ok)
+          //  console.log("just fetched");
+          //  console.log("response: "+ response.text())
+          //  console.log(response.ok)
           //  if (!response.ok) {
           //    // Optionally handle HTTP errors
           //    return response.text().then(text => {
@@ -71,7 +72,7 @@
           //    });
           //  }
            //return response.json();
-        })
+        
         .then(data => {
           //we never get to this statement...
           console.log("end fetched");
