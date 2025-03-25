@@ -64,12 +64,12 @@
            console.log("just fetched");
            console.log("response: "+ response.text())
            console.log(response.ok)
-           if (!response.ok) {
-             // Optionally handle HTTP errors
-             return response.text().then(text => {
-               throw new Error("Server error: " + text);
-             });
-           }
+          //  if (!response.ok) {
+          //    // Optionally handle HTTP errors
+          //    return response.text().then(text => {
+          //      throw new Error("Server error: " + text);
+          //    });
+          //  }
            return response.json();
         })
         .then(data => {
