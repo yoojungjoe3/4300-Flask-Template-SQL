@@ -161,16 +161,16 @@ def vector_search(user_query):
    
     # return total_sim_dict, top_fic, second_fic
 
-def sql_search(text):
-    """
-    Perform an SQL search using the LIKE operator.
-    This is a sample function. Adjust it as needed to combine with vector search results.
-    """
-    query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
-    keys = ["Name", "Fandom", "Ships", "Rating", "Link", "Review", "Abstract"]
-    data = mysql_engine.query_selector(query_sql)
-    return json.dumps([dict(zip(keys, record)) for record in data])
-    #return [dict(zip(keys, record)) for record in data]
+# def sql_search(text):
+#     """
+#     Perform an SQL search using the LIKE operator.
+#     This is a sample function. Adjust it as needed to combine with vector search results.
+#     """
+#     query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
+#     keys = ["Name", "Fandom", "Ships", "Rating", "Link", "Review", "Abstract"]
+#     data = mysql_engine.query_selector(query_sql)
+#     return json.dumps([dict(zip(keys, record)) for record in data])
+#     #return [dict(zip(keys, record)) for record in data]
 
 @app.route("/")
 def home():
