@@ -58,15 +58,6 @@ CORS(app)
 #cursor.close()
 #conn.close()
 # HOMEPAGE
-@app.route("/")
-def home():
-    # x = render_template('base.html', Name="sample html")
-    # fics_search()
-    return render_template('base.html', Name="sample html")
-
-def clean_text(user_query):
-    """Convert text to lowercase and remove punctuation."""
-    return re.sub(r'[^\w\s]', '', user_query.lower())
 
 # # Lists to hold extracted data from init.sql
 # fandoms = []
@@ -148,6 +139,16 @@ def sql_search(text):
     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
     data = mysql_engine.query_selector(query_sql)
     return [dict(zip(keys, record)) for record in data]
+
+@app.route("/")
+def home():
+    # x = render_template('base.html', Name="sample html")
+    # fics_search()
+    return render_template('base.html', Name="sample html")
+
+def clean_text(user_query):
+    """Convert text to lowercase and remove punctuation."""
+    return re.sub(r'[^\w\s]', '', user_query.lower())
 
 @app.route("/fics")
 def fics_search():
