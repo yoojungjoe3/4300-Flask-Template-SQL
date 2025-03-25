@@ -81,12 +81,12 @@
           if (data.top_fic) {
             const topDiv = document.createElement("div");
             topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
-            answerBoxTemplate.appendChild(topDiv);
+            document.getElementById("answer-box").appendChild(topDiv);
           }
           if (data.second_fic) {
             const secondDiv = document.createElement("div");
             secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
-            answerBoxTemplate.appendChild(secondDiv);
+            document.getElementById("answer-box").appendChild(secondDiv);
           }
 
           // Then loop over the results and display them
