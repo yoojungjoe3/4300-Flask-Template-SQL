@@ -138,11 +138,11 @@ def vector_search(user_query):
     top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
     second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
 
-    print(total_sim_dict)
+    #print(total_sim_dict)
 
     # Print similarity values and top results
-    print(f"Top result: {top_fic} with similarity score: {total_sim_dict[highest_key]}")
-    print(f"Second result: {second_fic} with similarity score: {total_sim_dict[second_highest_key]}")
+    #print(f"Top result: {top_fic} with similarity score: {total_sim_dict[highest_key]}")
+    #print(f"Second result: {second_fic} with similarity score: {total_sim_dict[second_highest_key]}")
 
     return total_sim_dict, top_fic, second_fic
    
@@ -184,10 +184,10 @@ def sql_search(text):
     Perform an SQL search using the LIKE operator.
     This is a sample function. Adjust it as needed to combine with vector search results.
     """
-    query_sql = f"""SELECT * FROM fics WHERE LOWER(Name) LIKE '%%{text.lower()}%%' LIMIT 10"""
+    query_sql = f"""SELECT * FROM fics WHERE LOWER( Name ) LIKE '%%{text.lower()}%%' limit 10"""
     keys = ["Name", "Fandom", "Ship(s)", "Rating", "Link", "Review", "Abstract"]
     data = mysql_engine.query_selector(query_sql)
-    return [dict(zip(keys, record)) for record in data]
+    return json.dumps([dict(zip(keys, record)) for record in data])
 
 @app.route("/")
 def home():
