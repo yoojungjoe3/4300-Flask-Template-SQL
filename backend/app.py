@@ -60,8 +60,14 @@ def vector_search(user_query):
     print(query_words)
 
     #creating the lists
-    fandoms = f"""SELECT Fandom FROM fics"""
-    ships = f"""SELECT Ship(s) FROM fics"""
+    # use cursor 
+    query = "SELECT Fandom, Ship(s) FROM fics;"
+    cursor.execute(query)
+    row = cursor.fetchall()
+    fandoms = [r[0] for r in row]
+    ships = [r[1] for r in row]
+    # fandoms = f"""SELECT Fandom FROM fics"""
+    # ships = f"""SELECT Ship(s) FROM fics"""
 
     vectorizer = TfidfVectorizer()
 
@@ -71,7 +77,7 @@ def vector_search(user_query):
 
     # Iterate through each word in the query and compare with fandoms and ships
     for word in query_words:
-        join_fandom_query = fandoms + [word]
+        join_fandom_query = [fandoms] + [word]
         tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query)
         query_vector_fandoms = tfidf_matrix_fandoms[-1]
         candidate_vectors_fandoms = tfidf_matrix_fandoms[:-1]
