@@ -53,7 +53,7 @@ CORS(app)
 #             fandoms.append(fandom_clean)
 #             ships.append(ship_clean)
 
-def vector_search2(user_query):
+def vector_search(user_query):
     """
     Compute combined similarity scores for the query against both fandoms and ships.
     Also prints the top two fanfic titles.
@@ -61,19 +61,25 @@ def vector_search2(user_query):
     """
     # Clean and prepare the query
     words = clean_text(user_query).split()
-    query_words = " ".join(words)
-    print(query_words)
+    # query_words = " ".join(words)
 
     #creating the lists
     # use cursor 
 
 
-    query = "SELECT Fandom, Ships FROM fics;"
-    row = mysql_engine.query_selector(query)
+    query = "SELECT Name, Fandom, Ships FROM fics;"
+    row = list(mysql_engine.query_selector(query))
+    print("row = " + str(row))
+
     # cursor.execute(query)
     # row = cursor.fetchall()
-    fandoms = [r[0] for r in row]
-    ships = [r[1] for r in row]
+    fandoms = row[1]
+    print("fandoms = " + str(fandoms))
+    print("ftype = " + str(type(fandoms)))
+    ships = row[2]
+    print("hekjwshfr")
+    names = row[0]
+    print("names = " + str(names))
     # fandoms = f"""SELECT Fandom FROM fics"""
     # ships = f"""SELECT Ship(s) FROM fics"""
 
@@ -84,9 +90,9 @@ def vector_search2(user_query):
     similarity_scores_ships = []
 
     # Iterate through each word in the query and compare with fandoms and ships
-    for word in query_words:
-        join_fandom_query = [fandoms] + [word]
-        tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query)
+    for word in words:
+        join_fandom_query = fandoms + [word]
+        tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query) # PROBLEM LINE!!!
         query_vector_fandoms = tfidf_matrix_fandoms[-1]
         candidate_vectors_fandoms = tfidf_matrix_fandoms[:-1]
         similarities_fandoms = cosine_similarity(query_vector_fandoms, candidate_vectors_fandoms).flatten()
@@ -106,7 +112,7 @@ def vector_search2(user_query):
     # Combine fandom and ship similarities
     combined_similarities = combined_fandom_similarities + combined_ship_similarities
     total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    print(total_sim_dict)
+    #print(total_sim_dict)
 
     # Sort keys (record indices) by similarity score (highest first)
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
@@ -172,11 +178,64 @@ def vector_search2(user_query):
 #     return json.dumps([dict(zip(keys, record)) for record in data])
 #     #return [dict(zip(keys, record)) for record in data]
 
-def vector_search(user_query):
+def vector_search2(user_query):
     total_sim_dict = {}
     top_fic = "Caring"
     second_fic = "Road Rage"
     return {'total_sim_dict': total_sim_dict, 'top_fic': top_fic, 'second_fic': second_fic}
+
+def vector_search5(user_query):
+    """
+    Compute similarity scores between the user's query and each fanfic record
+    based on combined Fandom and Ships fields.
+    
+    Returns:
+        total_sim_dict: dict mapping record index (starting at 1) to similarity score
+        top_fic: Name with the highest similarity score
+        second_fic: Name with the second highest similarity score
+    """
+    # Clean the user query
+    processed_query = clean_text(user_query)
+
+    # Fetch data from the database
+    query = "SELECT Name, Fandom, Ships FROM fics;"
+    rows = list(mysql_engine.query_selector(query))
+
+    # Extract each column from the rows
+    names   = [r[0] for r in rows]
+    print("names = " + str(names))
+    fandoms = [r[1] for r in rows]
+    print("fandoms = " + str(fandoms))
+    ships   = [r[2] for r in rows]
+    print("ships = " + str(ships))
+
+    # Combine each record's Fandom and Ships into a single text string
+    corpus = [f"{fandom} {ship}" for fandom, ship in zip(fandoms, ships)]
+
+    # Append the processed query to the corpus
+    corpus_with_query = corpus + [processed_query]
+
+    # Vectorize the combined texts once
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(corpus_with_query)
+
+    # Extract the query vector (last row) and all candidate vectors
+    query_vector = tfidf_matrix[-1]
+    candidate_vectors = tfidf_matrix[:-1]
+
+    # Calculate cosine similarity scores for each record
+    similarities = cosine_similarity(query_vector, candidate_vectors).flatten()
+
+    # Create a dictionary mapping record number (starting at 1) to similarity score
+    total_sim_dict = {i + 1: sim for i, sim in enumerate(similarities)}
+
+    # Sort records by similarity (highest first)
+    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+
+    top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
+    second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
+
+    return total_sim_dict, top_fic, second_fic
 
 @app.route("/")
 def home():
