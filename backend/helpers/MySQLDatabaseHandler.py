@@ -35,12 +35,26 @@ class MySQLDatabaseHandler(object):
         data = conn.execute(query)
         return data
 
-    def load_file_into_db(self,file_path  = None):
+    def load_file_into_db(self,file_path = None):
+        # if MySQLDatabaseHandler.IS_DOCKER:
+        #     return
+        # if file_path is None:
+        #     file_path = os.path.join(os.environ['ROOT_PATH'],'init.sql')
+        # sql_file = open(file_path,"r")
+        # sql_file_data = list(filter(lambda x:x != '',sql_file.read().split(";\n")))
+        # self.query_executor(sql_file_data)
+        # sql_file.close()
         if MySQLDatabaseHandler.IS_DOCKER:
             return
         if file_path is None:
-            file_path = os.path.join(os.environ['ROOT_PATH'],'init.sql')
-        sql_file = open(file_path,"r")
-        sql_file_data = list(filter(lambda x:x != '',sql_file.read().split(";\n")))
-        self.query_executor(sql_file_data)
-        sql_file.close()
+            file_path = os.path.join(os.environ['ROOT_PATH'], 'init.sql')
+        # Drop existing fics table to force reinitialization
+        drop_statement = "DROP TABLE IF EXISTS fics;"
+        self.query_executor([drop_statement])
+        
+        # Open and read the SQL file; adjust splitting as needed
+        with open(file_path, "r") as sql_file:
+            file_content = sql_file.read()
+            sql_statements = list(filter(lambda x: x.strip() != '', file_content.split(";\n")))
+        
+        self.query_executor(sql_statements)

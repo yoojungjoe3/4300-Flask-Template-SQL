@@ -61,25 +61,26 @@ def vector_search(user_query):
     """
     # Clean and prepare the query
     words = clean_text(user_query).split()
-    # query_words = " ".join(words)
 
     #creating the lists
     # use cursor 
-
-
     query = "SELECT Name, Fandom, Ships FROM fics;"
     row = list(mysql_engine.query_selector(query))
     print("row = " + str(row))
 
     # cursor.execute(query)
     # row = cursor.fetchall()
-    fandoms = row[1]
+
+    names = [r[0] for r in row]
+    print("names = " + str(names))
+    print("ntype = " + str(type(names)))
+    fandoms = [r[1] for r in row]
     print("fandoms = " + str(fandoms))
     print("ftype = " + str(type(fandoms)))
-    ships = row[2]
-    print("hekjwshfr")
-    names = row[0]
-    print("names = " + str(names))
+    ships = [r[2] for r in row]
+    print("ships = " + str(ships))
+    print("stype = " + str(type(ships)))
+
     # fandoms = f"""SELECT Fandom FROM fics"""
     # ships = f"""SELECT Ship(s) FROM fics"""
 
