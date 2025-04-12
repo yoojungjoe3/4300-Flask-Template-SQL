@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS fics (
     Rating VARCHAR(255) NOT NULL,
     Link VARCHAR(255),
     Review TEXT,
-    Abstract TEXT
+    Abstract TEXT,
+    Likes INT DEFAULT 0
 );
 
 INSERT INTO fics (Name, Fandom, Ships, Rating, Link, Review, Abstract) VALUES ('"BLAH A star for a summers day"', '"Harry Potter"', '"Jegulus"', '14', '"https://archiveofourown.org/works/47889160"', '"Oh this was lovely! It felt very appropriate that Andromeda would hate the summers because of her upbringing, but I love how Ted could bring her joy for the summer. This was so beatifully written, I really enjoyed it <3"', '"A love story that begins on an artificial summer day in January and ends with a tearful farewell beneath the unforgiving August sun."');
