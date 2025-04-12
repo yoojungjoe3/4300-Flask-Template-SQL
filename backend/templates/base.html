@@ -8,11 +8,15 @@
     <div class="full-body-container">
         <div class="top-text">
             <div class="google-colors">
-                <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive;">QuillQuest</h1>
+              <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive;">
+                QuillQuest
+                <img src="feather-pen-14259_256.gif" alt="Quill writing"
+                     style="vertical-align: middle; width: 40px; height: auto;"/>
+              </h1>
             </div>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/search2.png') }}" />
-                <input name="Name" placeholder="Search for your fanfic" id="filter-text-val" onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
+                <input name="Name" placeholder="Search Harry Potter...Search Kardashians..." id="filter-text-val" onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
             </div>
         </div>
         <div id="answer-box">
