@@ -36,23 +36,20 @@
   <script>
 
 //Put every entry box through here to be shown on the screen
-    function answerBoxTemplate(title, titleDesc, ship, kudos, link, fandom) {
-      return 
+    function answerBoxTemplate(name, ship, fandom, rating, abstract, link) {
+      return `
     <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
-
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="margin: 0;">${title}</h2>
-          <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px; width: fit-content">${kudos}</span>
-        </div>
-        <p> ${ship} | ${fandom}</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <img src="{ url_for('static', filename='images/dumbly.jpg') }" />
-          <span style="font-size: 14px; width: fit-content">${titleDesc} ${link}</span>
-        </div>
-    </div>
-    }
-
-    
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">${title}</h2>
+        <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">${kudos}</span>
+      </div>
+      <p>${ship} | ${fandom}</p>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <img src="/static/images/dumbly.jpg" style="max-width: 100px;" />
+        <span style="font-size: 14px;">${titleDesc}<br><a href="${link}" target="_blank">${link}</a></span>
+      </div>
+    </div>`;
+}
 
     function sendFocus() {
       document.getElementById('filter-text-val').focus()
@@ -103,25 +100,21 @@
           console.log("end fetched");
           console.log(data);
 
-          if (data.ourentries){
-            if (data.ourentries == []){
-              //Print Error message
-              answerbox.innerHTML = "<p>No results found</p>";}
-            else{
-              for (i in data.ourentries){
-                //call AnswerBlocktemplate
-                // Generate the HTML
-                const answerBoxHTML = answerBoxTemplate(i.name, i.abstract, i.ship, i.rating, i.link, i.fandom);
+          if (data.ourentries && data.ourentries.length === 0){
+            //Print Error message
+            // answerbox.innerHTML = "<p>No results found</p>";}
+            document.getElementById("answer-box").innerHTML = "<p>No results found</p>";}
+          else{
+            for (const i in data.ourentries){
+              //call AnswerBlocktemplate
+              // Generate the HTML
+              const answerBoxHTML = answerBoxTemplate(i.name, i.ship, i.fandom, i.rating, i.abstract, i.link);
 
-                // Inject it into the DOM
-                document.getElementById("answer-box").innerHTML += answerBoxHTML;
-              }
+              // Inject it into the DOM
+              document.getElementById("answer-box").innerHTML += answerBoxHTML;
+              
             }
-
-            
-
           }
-
 
           // Display the top fanfics first
           if (data.top_fic) {
@@ -144,7 +137,8 @@
                                     <em>${record.Abstract}</em>`;
               list.appendChild(listItem);
             });
-            answerBoxTemplate.appendChild(list);
+            // answerBoxTemplate.appendChild(list);
+            document.getElementById("answer-box").appendChild(list);
           } else {
             answerBoxTemplate.innerHTML = "<p>we found no results matching your query</p>";
           }
