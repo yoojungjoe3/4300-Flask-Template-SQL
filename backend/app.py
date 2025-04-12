@@ -34,8 +34,8 @@ init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 #function creates object in the format that we want printed out
 class Entry:
-    def __init__(self, names, ships, fandoms, ratings, abstracts, links):
-        self.names = names
+    def __init__(self, name, ships, fandoms, ratings, abstracts, links):
+        self.name = name
         self.ships = ships
         self.fandoms = fandoms
         self.ratings = ratings
