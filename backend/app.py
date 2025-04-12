@@ -115,20 +115,28 @@ def vector_search(user_query):
     # Combine fandom and ship similarities
     combined_similarities = combined_fandom_similarities + combined_ship_similarities + combined_abstract_similarities + combined_review_similarities
     total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    print(total_sim_dict)
+    # print(total_sim_dict)
 
     # Sort keys (record indices) by similarity score (highest first)
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
 
-    # Get the keys for the highest and second-highest scores
-    highest_key = sorted_keys[0]
-    second_highest_key = sorted_keys[1]
+    ourentries =[]
 
-    # Adjust index for names list (keys start at 1, list is zero-indexed)
-    top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
-    second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
+    for x in sorted_keys: 
+        if total_sim_dict[x] != 0: 
+            final_fic = names[x-1] 
+            ourentries.append(final_fic)        
+    return ourentries
 
-    return total_sim_dict, top_fic, second_fic
+    # # Get the keys for the highest and second-highest scores
+    # highest_key = sorted_keys[0]
+    # second_highest_key = sorted_keys[1]
+
+    # # Adjust index for names list (keys start at 1, list is zero-indexed)
+    # top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
+    # second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
+
+    # return total_sim_dict, top_fic, second_fic
 
 
 # def sql_search(text):
