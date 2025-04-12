@@ -11,10 +11,8 @@
     <div class="top-text">
       <div class="google-colors">
         <div style="position: relative; display: inline-block;">
-          <img src="{{ url_for('static', filename='images/title_gif.gif') }}" alt="QuillQuest Logo"
-            style="position: relative; z-index: 1; width: 400px; height: auto;" />
-          <!-- <img src="{{ url_for('static', filename='images/project.png') }}" alt="QuillQuest Logo"
-            style="position: relative; z-index: 1; width: 500px; height: auto;" /> -->
+          <img src="{{ url_for('static', filename='images/project.png') }}" alt="QuillQuest Logo"
+            style="position: relative; z-index: 1; width: 500px; height: auto;" />
           <!-- <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
             QuillQuest
           </h1> -->
@@ -24,7 +22,7 @@
       </div>
       <div class="input-box" onclick="sendFocus()">
         <img src="{{ url_for('static', filename='images/search2.png') }}" />
-        <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val"
+        <input name="Name" placeholder="Search 'Harry Potter'...Search 'Dramione'..." id="filter-text-val"
           onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
       </div>
     </div>
@@ -35,12 +33,24 @@
 
   <script>
 
-    function answerBoxTemplate(title, titleDesc) {
-      return `<div class=''>
-                <h3 class='episode-title'>${title}</h3>
-                <p class='episode-desc'>${titleDesc}</p>
-            </div>`
+//Put every entry box through here to be shown on the screen
+    function answerBoxTemplate(title, titleDesc, ship, kudos, link, fandom, image) {
+      return 
+    <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="margin: 0;">${title}</h2>
+          <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px; width: fit-content">${kudos}</span>
+        </div>
+        <p> ${ship} | ${fandom}</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="{ url_for('static', filename='images/dumbly.jpg') }" />
+          <span style="font-size: 14px; width: fit-content">${titleDesc} ${link}</span>
+        </div>
+    </div>
     }
+
+    
 
     function sendFocus() {
       document.getElementById('filter-text-val').focus()
@@ -90,6 +100,27 @@
           //we never get to this statement...
           console.log("end fetched");
           console.log(data);
+
+          if (data.ourentries){
+            if (data.ourentries == []){
+              //Print Error message
+              x = 0;}
+            else{
+              for (i in data.ourentries){
+                //call AnswerBlocktemplate
+                // Generate the HTML
+                const answerBoxHTML = answerBoxTemplate(i.title, i.description, i.ship, i.kudos, i.link, i.fandom, i.image);
+
+                // Inject it into the DOM
+                document.getElementById("answer-box").innerHTML += answerBoxHTML;
+              }
+            }
+
+            
+
+          }
+
+
           // Display the top fanfics first
           if (data.top_fic) {
             const topDiv = document.createElement("div");
@@ -113,7 +144,7 @@
             });
             answerBoxTemplate.appendChild(list);
           } else {
-            answerBoxTemplate.innerHTML = "<p>No results found.</p>";
+            answerBoxTemplate.innerHTML = "<p>we found no results matching your query</p>";
           }
         })
         .catch(error => {
