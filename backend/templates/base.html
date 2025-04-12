@@ -38,19 +38,18 @@
 //Put every entry box through here to be shown on the screen
     function answerBoxTemplate(name, ship, fandom, rating, abstract, link) {
       return `
-    <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0;">${title}</h2>
-        <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">${kudos}</span>
-      </div>
-      <p>${ship} | ${fandom}</p>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <img src="/static/images/dumbly.jpg" style="max-width: 100px;" />
-        <span style="font-size: 14px;">${titleDesc}<br><a href="${link}" target="_blank">${link}</a></span>
-      </div>
-    </div>`;
-}
-
+        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">${name}</h2>
+            <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
+          </div>
+          <p>${ship} | ${fandom}</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <img src="/static/images/dumbly.jpg" style="max-width: 100px;" />
+            <span style="font-size: 14px;">${abstract}<br><a href="${link}" target="_blank">${link}</a></span>
+          </div>
+        </div>`;
+    }
     function sendFocus() {
       document.getElementById('filter-text-val').focus()
     }

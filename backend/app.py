@@ -54,7 +54,7 @@ class Entry:
         }
 
     def __repr__(self):
-        return f"Entry(Name: {self.name}, Ships: {self.ships}, Fandoms: {self.fandoms}, Ratings: {self.ratings}, Abstracts: {self.abstracts}, Links: {self.links})"
+        return f"Entry(Name: {self.name}, Ships: {self.ship}, Fandoms: {self.fandom}, Ratings: {self.rating}, Abstracts: {self.abstract}, Links: {self.link})"
 
 def vector_search(user_query):
     """
