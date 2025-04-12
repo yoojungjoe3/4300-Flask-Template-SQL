@@ -36,7 +36,7 @@
   <script>
 
 //Put every entry box through here to be shown on the screen
-    function answerBoxTemplate(title, titleDesc, ship, kudos, link, fandom, image) {
+    function answerBoxTemplate(title, titleDesc, ship, kudos, link, fandom) {
       return 
     <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
 
@@ -106,12 +106,12 @@
           if (data.ourentries){
             if (data.ourentries == []){
               //Print Error message
-              x = 0;}
+              answerbox.innerHTML = "<p>No results found</p>";}
             else{
               for (i in data.ourentries){
                 //call AnswerBlocktemplate
                 // Generate the HTML
-                const answerBoxHTML = answerBoxTemplate(i.title, i.description, i.ship, i.kudos, i.link, i.fandom, i.image);
+                const answerBoxHTML = answerBoxTemplate(i.name, i.abstract, i.ship, i.rating, i.link, i.fandom);
 
                 // Inject it into the DOM
                 document.getElementById("answer-box").innerHTML += answerBoxHTML;
