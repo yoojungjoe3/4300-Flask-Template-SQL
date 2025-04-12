@@ -44,7 +44,7 @@ class Entry:
         #self.pic = tbd
 
     def __repr__(self):
-        return f"Entry(Name: {self.names}, Ships: {self.ships}, Fandoms: {self.fandoms}, Ratings: {self.ratings}, Abstracts: {self.abstracts}, Links: {self.links})"
+        return f"Entry(Name: {self.name}, Ships: {self.ships}, Fandoms: {self.fandoms}, Ratings: {self.ratings}, Abstracts: {self.abstracts}, Links: {self.links})"
 
 def vector_search(user_query):
     """
