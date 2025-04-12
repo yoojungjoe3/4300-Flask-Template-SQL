@@ -43,6 +43,16 @@ class Entry:
         self.link = link
         #self.pic = tbd
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "ship": self.ship,
+            "fandom": self.fandom,
+            "rating": self.rating,
+            "abstract": self.abstract,
+            "link": self.link
+        }
+
     def __repr__(self):
         return f"Entry(Name: {self.name}, Ships: {self.ships}, Fandoms: {self.fandoms}, Ratings: {self.ratings}, Abstracts: {self.abstracts}, Links: {self.links})"
 
@@ -169,9 +179,10 @@ def fics_search():
 
     ourentries = vector_search(user_query)
     #results = sql_search(user_query)
+    ourentries_dicts = [entry.to_dict() for entry in ourentries]
 
     return jsonify({
-        "ourentries": ourentries,
+        "ourentries": ourentries_dicts,
     })
 
 
