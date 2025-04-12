@@ -105,10 +105,10 @@
             // answerbox.innerHTML = "<p>No results found</p>";}
             document.getElementById("answer-box").innerHTML = "<p>No results found</p>";}
           else{
-            for (const i in data.ourentries){
+            for (const entry in data.ourentries){
               //call AnswerBlocktemplate
               // Generate the HTML
-              const answerBoxHTML = answerBoxTemplate(i.name, i.ship, i.fandom, i.rating, i.abstract, i.link);
+              const answerBoxHTML = answerBoxTemplate(entry.name, entry.ship, entry.fandom, entry.rating, entry.abstract, entry.link);
 
               // Inject it into the DOM
               document.getElementById("answer-box").innerHTML += answerBoxHTML;
