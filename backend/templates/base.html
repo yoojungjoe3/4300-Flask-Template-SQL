@@ -8,11 +8,13 @@
     <div class="full-body-container">
         <div class="top-text">
             <div class="google-colors">
-              <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive;">
-                QuillQuest
-                <img src="{{ url_for('static', filename='images/feather-pen-14259_256.gif') }}"
-                     style="vertical-align: middle; width: 40px; height: auto;" />
-              </h1>
+              <div style="position: relative; display: inline-block;">
+                <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
+                  QuillQuest
+                </h1>
+                <img src="{{ url_for('static', filename='images/QK5b.gif') }}"
+                     style="position: absolute; top: 0; left: 0; width: 100px; height: auto; z-index: 0; opacity: 0.6;" />
+              </div>
             </div>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/search2.png') }}" />
