@@ -34,13 +34,13 @@ init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 #function creates object in the format that we want printed out
 class Entry:
-    def __init__(self, name, ships, fandoms, ratings, abstracts, links):
+    def __init__(self, name, ship, fandom, rating, abstract, link):
         self.name = name
-        self.ships = ships
-        self.fandoms = fandoms
-        self.ratings = ratings
-        self.abstracts = abstracts
-        self.links = links
+        self.ship = ship
+        self.fandom = fandom
+        self.rating = rating
+        self.abstract = abstract
+        self.link = link
         #self.pic = tbd
 
     def __repr__(self):
@@ -126,18 +126,16 @@ def vector_search(user_query):
 
     for x in sorted_keys: 
         if total_sim_dict[x] != 0: 
-            final_names = names[x-1]
-            final_ships = ships[x-1]
-            final_fandoms = fandoms[x-1]
-            final_ratings = ratings[x-1]
-            final_abstracts = abstracts[x-1]
-            final_links = links[x-1]
+            final_name = names[x-1]
+            final_ship = ships[x-1]
+            final_fandom = fandoms[x-1]
+            final_rating = ratings[x-1]
+            final_abstract = abstracts[x-1]
+            final_link = links[x-1]
 
-            e = Entry(final_names, final_ships, final_fandoms, final_ratings, final_abstracts, final_links)
+            e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
             ourentries.append(e)
-
-
-    print(ourentries)        
+     
     return ourentries
 
 
@@ -169,13 +167,11 @@ def fics_search():
         return ("Please input a query :)"), 400
 
 
-    sim_dict, top_fic, second_fic = vector_search(user_query)
+    ourentries = vector_search(user_query)
     #results = sql_search(user_query)
 
     return jsonify({
-        "similarities": sim_dict,
-        "top_fic": top_fic,
-        "second_fic": second_fic
+        "ourentries": ourentries,
     })
 
 
