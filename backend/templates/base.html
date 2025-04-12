@@ -3,58 +3,65 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap" rel="stylesheet">
-<body style="background-color: #F5F5DC;">
-    <div class="full-body-container">
-        <div class="top-text">
-            <div class="google-colors">
-              <div style="position: relative; display: inline-block;">
-                <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
-                  QuillQuest
-                </h1>
-                <img src="{{ url_for('static', filename='images/QK5b.gif') }}"
-                     style="position: absolute; top: 0; left: 0; width: 100px; height: auto; z-index: 0; opacity: 0.6;" />
-              </div>
-            </div>
-            <div class="input-box" onclick="sendFocus()">
-                <img src="{{ url_for('static', filename='images/search2.png') }}" />
-                <input name="Name" placeholder="Search 'Harry Potter'...Search 'Dramione'..." id="filter-text-val" onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
-            </div>
-        </div>
-        <div id="answer-box">
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
+  rel="stylesheet">
 
+<body style="background-color: #f4f3ee;">
+  <!-- # 415a77
+  # 3c4f76 -->
+  <div class="full-body-container">
+    <div class="top-text">
+      <div class="google-colors">
+        <div style="position: relative; display: inline-block;">
+          <img src="{{ url_for('static', filename='images/project.png') }}" alt="QuillQuest Logo"
+            style="position: relative; z-index: 1; width: 500px; height: auto;" />
+          <!-- <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
+            QuillQuest
+          </h1> -->
+          <!-- <img src="{{ url_for('static', filename='images/QK5b.gif') }}"
+            style="position: absolute; top: 0; left: 0; width: 100px; height: auto; z-index: 0; opacity: 0.6;" /> -->
         </div>
+      </div>
+      <div class="input-box" onclick="sendFocus()">
+        <img src="{{ url_for('static', filename='images/search2.png') }}" />
+        <input name="Name" placeholder="Search 'Harry Potter'...Search 'Dramione'..." id="filter-text-val"
+          onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
+      </div>
     </div>
+    <div id="answer-box">
 
-    <script>
+    </div>
+  </div>
 
-        function answerBoxTemplate(title,titleDesc){
-            return `<div class=''>
+  <script>
+
+    function answerBoxTemplate(title, titleDesc) {
+      return `<div class=''>
                 <h3 class='episode-title'>${title}</h3>
                 <p class='episode-desc'>${titleDesc}</p>
             </div>`
-        }
+    }
 
-        function sendFocus(){
-            document.getElementById('filter-text-val').focus()
-        }
-        
+    function sendFocus() {
+      document.getElementById('filter-text-val').focus()
+    }
 
-        //This function fiters the inputed search text
-        // function filterText(){
-        //     document.getElementById("answer-box").innerHTML = "" //Clears the Display
-        //     console.log(document.getElementById("filter-text-val").value) //puts text into the console
-        //     fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
-        //     .then((response) => response.json())  //converts JSON response to javascript
-        //     .then((data) => data.forEach(row => {  //updates the display
-                
-        //         let tempDiv = document.createElement("div")
-        //         tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
-        //         document.getElementById("answer-box").appendChild(tempDiv)
-        //     }));
 
-        // }
-    function filterText(){
+    //This function fiters the inputed search text
+    // function filterText(){
+    //     document.getElementById("answer-box").innerHTML = "" //Clears the Display
+    //     console.log(document.getElementById("filter-text-val").value) //puts text into the console
+    //     fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
+    //     .then((response) => response.json())  //converts JSON response to javascript
+    //     .then((data) => data.forEach(row => {  //updates the display
+
+    //         let tempDiv = document.createElement("div")
+    //         tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
+    //         document.getElementById("answer-box").appendChild(tempDiv)
+    //     }));
+
+    // }
+    function filterText() {
       // Clear previous results
       //const answerBox = document.getElementById("answer-box");
       //answerBox.innerHTML = "";
@@ -67,18 +74,18 @@
       fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
         // .then(response => {
         .then((response => response.json()))
-           //this statement gets printed
-          //  console.log("just fetched");
-          //  console.log("response: "+ response.text())
-          //  console.log(response.ok)
-          //  if (!response.ok) {
-          //    // Optionally handle HTTP errors
-          //    return response.text().then(text => {
-          //      throw new Error("Server error: " + text);
-          //    });
-          //  }
-           //return response.json();
-        
+        //this statement gets printed
+        //  console.log("just fetched");
+        //  console.log("response: "+ response.text())
+        //  console.log(response.ok)
+        //  if (!response.ok) {
+        //    // Optionally handle HTTP errors
+        //    return response.text().then(text => {
+        //      throw new Error("Server error: " + text);
+        //    });
+        //  }
+        //return response.json();
+
         .then(data => {
           //we never get to this statement...
           console.log("end fetched");
@@ -113,7 +120,7 @@
           console.error("Fetch error:", error);
           answerBoxTemplate.innerHTML = `<p>Error: ${error.message}</p>`;
         });
-  }
- 
-    </script>
+    }
+
+  </script>
 </body>
