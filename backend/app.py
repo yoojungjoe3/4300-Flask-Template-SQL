@@ -34,13 +34,13 @@ init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 #function creates object in the format that we want printed out
 class Entry:
-    def __init__(title, ship, fandom, kudos, description, link):
-        self.title = title
-        self.ship = ship
-        self.fandom = fandom
-        self.kudos = kudos
-        self.description = description
-        self.link = link
+    def __init__(self, names, ships, fandoms, ratings, abstracts, links):
+        self.names = names
+        self.ships = ships
+        self.fandoms = fandoms
+        self.ratings = ratings
+        self.abstracts = abstracts
+        self.links = links
         #self.pic = tbd
 
 
@@ -124,19 +124,19 @@ def vector_search(user_query):
 
     for x in sorted_keys: 
         if total_sim_dict[x] != 0: 
-            final_fic = names[x-1] 
-            ourentries.append(final_fic)        
+            final_names = names[x-1]
+            final_ships = ships[x-1]
+            final_fandoms = fandoms[x-1]
+            final_ratings = ratings[x-1]
+            final_abstracts = abstracts[x-1]
+            final_links = links[x-1]
+
+            e = Entry(final_names, final_ships, final_fandoms, final_ratings, final_abstracts, final_links)
+            ourentries.append(e)
+
+
+    print(ourentries)        
     return ourentries
-
-    # # Get the keys for the highest and second-highest scores
-    # highest_key = sorted_keys[0]
-    # second_highest_key = sorted_keys[1]
-
-    # # Adjust index for names list (keys start at 1, list is zero-indexed)
-    # top_fic = names[sorted_keys[0] - 1] if sorted_keys else None
-    # second_fic = names[sorted_keys[1] - 1] if len(sorted_keys) > 1 else None
-
-    # return total_sim_dict, top_fic, second_fic
 
 
 # def sql_search(text):
