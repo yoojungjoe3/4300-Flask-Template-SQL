@@ -33,20 +33,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 init_sql_path = os.path.join(current_dir, "..", "init.sql")
 
 
-#function creates object in the format that we want printed out
-class Entry:
-    def __init__(title, ship, fandom, kudos, description, link):
-        self.title = title
-        self.ship = ship
-        self.fandom = fandom
-        self.kudos = kudos
-        self.description = description
-        self.link = link
-        #self.pic = tbd
-
-
-
-
 def vector_search(user_query):
     """
     Compute combined similarity scores for the query against both fandoms and ships.
