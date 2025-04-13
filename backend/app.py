@@ -44,15 +44,15 @@ class Entry:
         if fandom == ('"Harry Potter"'):
             self.image = "/static/images/dumbly.jpg"
         elif fandom == ('"Kardashians"'):
-            self.image ="/static/images/dumbly.jpg"
+            self.image ="/static/images/KIM.jpg"
         elif fandom == ('"One Direction"'):
             self.image = "/static/images/OneD.jpeg"
         elif fandom == ('"Hunger Games"'):
             self.image = "/static/images/HG.jpeg"
-        elif fandom == ('"Princess Diaries"'):
+        elif fandom == ('"The Princess Diaries"'):
             self.image = "/static/images/PD.jpg"
         else:
-            self.image = "/static/images/dumbly.jpg"
+            self.image = "/static/images/fandom.jpeg"
 
     def to_dict(self):
         return {
