@@ -37,17 +37,17 @@
 
     //Put every entry box through here to be shown on the screen
     function answerBoxTemplate(name, ship, fandom, rating, abstract, link) {
-      // image = dumbly.jpg
-      // if (fandom == "Harry Potter"){
-      //   image = dumbly.jpg
-      // }elif(fandom == "Kardashians"){
-      //   image = dumbly.jpg}
-      // elif(fandom == "One Direction"){
-      //   image = dumbly.jpg}
-      // elif(fandom == "Hunger Games"){
-      //   image = dumbly.jpg}
-      // elif(fandom == "Hunger Games"){
-      //   image = PD.jpg}
+      image = dumbly.jpg
+      if (fandom == "Harry Potter"){
+        image = dumbly.jpg
+      }elif(fandom == "Kardashians")
+      {image = dumbly.jpg}
+      elif(fandom == "One Direction")
+      {image = OneD.jpg}
+      elif(fandom == "Hunger Games")
+      {image = HG.jpg}
+      elif(fandom == "Hunger Games")
+      {image = PD.jpg}
       return `
         <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -56,7 +56,7 @@
           </div>
           <p>${ship} | ${fandom}</p>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <img src="/static/images/dumbly.jpg" style="max-width: 100px;" />
+            <img src="/static/images/${image}" style="max-width: 100px;" />
             <span style="font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
           </div>
         </div>`;
