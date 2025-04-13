@@ -42,17 +42,17 @@ class Entry:
         self.abstract = abstract
         self.link = link
         if fandom == "Harry Potter":
-            self.image = "dumbly.jpg"
+            self.image = "/static/images/dumbly.jpg"
         else if fandom == "Kardashians":
-            self.image ="dumbly.jpg"
+            self.image ="/static/images/dumbly.jpg"
         else if fandom == "One Direction":
-            self.image = "OneD.jpeg"
+            self.image = "/static/images/OneD.jpeg"
         else if fandom == "Hunger Games":
-            self.image = "HG.jpeg"
+            self.image = "/static/images/HG.jpeg"
         else if fandom == "Princess Diaries":
-            self.image = "PD.jpg"
+            self.image = "/static/images/PD.jpg"
         else:
-            self.image = "dumbly.jpg"
+            self.image = "/static/images/dumbly.jpg"
 
     def to_dict(self):
         return {
