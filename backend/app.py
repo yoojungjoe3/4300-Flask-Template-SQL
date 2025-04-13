@@ -143,6 +143,7 @@ def vector_search(user_query):
             final_abstract = abstracts[x-1]
             final_link = links[x-1]
 
+
             e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
             ourentries.append(e)
      
