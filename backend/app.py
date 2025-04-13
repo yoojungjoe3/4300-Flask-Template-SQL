@@ -43,13 +43,13 @@ class Entry:
         self.link = link
         if fandom == "Harry Potter":
             self.image = "/static/images/dumbly.jpg"
-        else if fandom == "Kardashians":
+        elif fandom == "Kardashians":
             self.image ="/static/images/dumbly.jpg"
-        else if fandom == "One Direction":
+        elif fandom == "One Direction":
             self.image = "/static/images/OneD.jpeg"
-        else if fandom == "Hunger Games":
+        elif fandom == "Hunger Games":
             self.image = "/static/images/HG.jpeg"
-        else if fandom == "Princess Diaries":
+        elif fandom == "Princess Diaries":
             self.image = "/static/images/PD.jpg"
         else:
             self.image = "/static/images/dumbly.jpg"
@@ -61,7 +61,7 @@ class Entry:
             "fandom": self.fandom,
             "rating": self.rating,
             "abstract": self.abstract,
-            "link": self.link
+            "link": self.link,
             "image": self.image
         }
 
