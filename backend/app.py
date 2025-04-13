@@ -41,7 +41,18 @@ class Entry:
         self.rating = rating
         self.abstract = abstract
         self.link = link
-        #self.pic = tbd
+        if fandom == "Harry Potter":
+            self.image = "dumbly.jpg"
+        else if fandom == "Kardashians":
+            self.image ="dumbly.jpg"
+        else if fandom == "One Direction":
+            self.image = "OneD.jpeg"
+        else if fandom == "Hunger Games":
+            self.image = "HG.jpeg"
+        else if fandom = "Princess Diaries":
+            self.image = "PD.jpg"
+        else:
+            self.image = "dumbly.jpg"
 
     def to_dict(self):
         return {
