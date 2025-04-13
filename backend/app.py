@@ -41,15 +41,15 @@ class Entry:
         self.rating = rating
         self.abstract = abstract
         self.link = link
-        if fandom == "Harry Potter":
+        if fandom == ('"Harry Potter"'):
             self.image = "/static/images/dumbly.jpg"
-        elif fandom == "Kardashians":
+        elif fandom == ('"Kardashians"'):
             self.image ="/static/images/dumbly.jpg"
-        elif fandom == "One Direction":
+        elif fandom == ('"One Direction"'):
             self.image = "/static/images/OneD.jpeg"
-        elif fandom == "Hunger Games":
+        elif fandom == ('"Hunger Games"'):
             self.image = "/static/images/HG.jpeg"
-        elif fandom == "Princess Diaries":
+        elif fandom == ('"Princess Diaries"'):
             self.image = "/static/images/PD.jpg"
         else:
             self.image = "/static/images/dumbly.jpg"
