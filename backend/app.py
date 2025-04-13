@@ -88,7 +88,8 @@ def vector_search(user_query):
     reviews = [r[5] for r in row]
     abstracts = [r[6] for r in row]
 
-    vectorizer = TfidfVectorizer()
+    #vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3,5), stop_words='english')
 
     # Create a list to store the similarity scores for the query words
     similarity_scores_fandoms = []
@@ -146,8 +147,14 @@ def vector_search(user_query):
 
     ourentries =[]
 
+    nonzero_values = [v for v in total_sim_dict.values() if v != 0]
+    if nonzero_values:
+        average = sum(nonzero_values) / len(nonzero_values)
+    else:
+        average = 0
+
     for x in sorted_keys: 
-        if total_sim_dict[x] != 0: 
+        if total_sim_dict[x] > average * 2: 
             final_name = names[x-1]
             final_ship = ships[x-1]
             final_fandom = fandoms[x-1]
