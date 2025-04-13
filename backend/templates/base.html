@@ -35,20 +35,29 @@
 
   <script>
 
+    const imageMap = {
+      "Harry Potter": "/static/images/dumbly.jpg",
+      "Kardashians": "dumbly.jpg",
+      "One Direction": "/static/images/OneD.jpeg",
+      "Hunger Games": "/static/images/HG.jpeg",
+      "Princess Diaries": "/static/images/PD.jpg"
+    };
+
     //Put every entry box through here to be shown on the screen
     function answerBoxTemplate(name, ship, fandom, rating, abstract, link) {
       console.log(fandom)
-      image = "/static/images/dumbly.jpg"
-      if (fandom == "Harry Potter"){
-        image = "/static/images/dumbly.jpg"
-      }else if(fandom == "Kardashians")
-      {image = "/static/images/dumbly.jpg"}
-      else if(fandom == "One Direction")
-      {image = "/static/images/OneD.jpeg"}
-      else if(fandom == "Hunger Games")
-      {image = "/static/images/HG.jpeg"}
-      else if(fandom == "Princess Diaries")
-      {image = "/static/images/PD.jpg"}
+      // image = "/static/images/dumbly.jpg"
+      // if (fandom == "Harry Potter"){
+      //   image = "/static/images/dumbly.jpg"
+      // }else if(fandom == "Kardashians")
+      // {image = "/static/images/dumbly.jpg"}
+      // else if(fandom == "One Direction")
+      // {image = "/static/images/OneD.jpeg"}
+      // else if(fandom == "Hunger Games")
+      // {image = "/static/images/HG.jpeg"}
+      // else if(fandom == "Princess Diaries")
+      // {image = "/static/images/PD.jpg"}
+      const image = imageMap[fandom] ||"/static/images/dumbly.jpg";
       return `
         <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
