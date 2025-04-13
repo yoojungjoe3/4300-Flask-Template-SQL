@@ -35,7 +35,7 @@
 
   <script>
 
-//Put every entry box through here to be shown on the screen
+    //Put every entry box through here to be shown on the screen
     function answerBoxTemplate(name, ship, fandom, rating, abstract, link) {
       return `
         <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 10px 0; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 500px;">
@@ -99,19 +99,20 @@
           console.log("end fetched");
           console.log(data);
 
-          if (data.ourentries && data.ourentries.length === 0){
+          if (data.ourentries && data.ourentries.length === 0) {
             //Print Error message
             // answerbox.innerHTML = "<p>No results found</p>";}
-            document.getElementById("answer-box").innerHTML = "<p>No results found</p>";}
-          else{
-            for (const entry in data.ourentries){
+            document.getElementById("answer-box").innerHTML = "<p>No results found</p>";
+          }
+          else {
+            for (entry in data.ourentries) {
               //call AnswerBlocktemplate
               // Generate the HTML
-              const answerBoxHTML = answerBoxTemplate(entry.name, entry.ship, entry.fandom, entry.rating, entry.abstract, entry.link);
+              const answerBoxHTML = answerBoxTemplate(data.ourentries[entry].name, data.ourentries[entry].ship, data.ourentries[entry].fandom, data.ourentries[entry].rating, data.ourentries[entry].abstract, data.ourentries[entry].link);
 
               // Inject it into the DOM
               document.getElementById("answer-box").innerHTML += answerBoxHTML;
-              
+
             }
           }
 
