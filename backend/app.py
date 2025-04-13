@@ -49,7 +49,7 @@ class Entry:
             self.image = "OneD.jpeg"
         else if fandom == "Hunger Games":
             self.image = "HG.jpeg"
-        else if fandom = "Princess Diaries":
+        else if fandom == "Princess Diaries":
             self.image = "PD.jpg"
         else:
             self.image = "dumbly.jpg"
@@ -62,10 +62,11 @@ class Entry:
             "rating": self.rating,
             "abstract": self.abstract,
             "link": self.link
+            "image": self.image
         }
 
     def __repr__(self):
-        return f"Entry(Name: {self.name}, Ships: {self.ship}, Fandoms: {self.fandom}, Ratings: {self.rating}, Abstracts: {self.abstract}, Links: {self.link})"
+        return f"Entry(Name: {self.name}, Ships: {self.ship}, Fandoms: {self.fandom}, Ratings: {self.rating}, Abstracts: {self.abstract}, Links: {self.link}, Image: {self.image})"
 
 def vector_search(user_query):
     """
