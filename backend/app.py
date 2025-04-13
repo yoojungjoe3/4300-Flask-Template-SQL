@@ -45,6 +45,8 @@ class Entry:
             self.image = "/static/images/dumbly.jpg"
         elif fandom == ('"Kardashians"'):
             self.image ="/static/images/KIM.jpg"
+        elif fandom == ('"Merlin"'):
+            self.image ="/static/images/Merlin.jpg"
         elif fandom == ('"One Direction"'):
             self.image = "/static/images/OneD.jpeg"
         elif fandom == ('"Hunger Games"'):
