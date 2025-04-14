@@ -7,6 +7,7 @@ from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import TruncatedSVD
 
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 # import sqlalchemy as db 
@@ -170,6 +171,78 @@ def vector_search(user_query):
      
     return ourentries
 
+def compute_svd_similarity(texts, query, n_components=100):
+    """
+    Compute cosine similarity between a user query and a list of texts
+    using TF-IDF vectorization followed by SVD dimensionality reduction.
+    """
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(texts + [query])
+    
+    # Reduce number of dimensions to capture semantic patterns
+    n_components = min(n_components, tfidf_matrix.shape[1] - 1)
+    svd = TruncatedSVD(n_components=n_components)
+    reduced_matrix = svd.fit_transform(tfidf_matrix)
+    
+    query_vector = reduced_matrix[-1]
+    candidate_vectors = reduced_matrix[:-1]
+    similarities = cosine_similarity([query_vector], candidate_vectors).flatten()
+    return similarities
+
+def SVD_vector_search(user_query):
+    """
+    Compute combined similarity scores for the query against both fandoms and ships,
+    abstracts, and reviews using SVD-reduced TF-IDF vectors.
+    Returns a list of Entry objects for the best matches.
+    """
+    words = clean_text(user_query).split()
+
+    query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
+    row = list(mysql_engine.query_selector(query))
+
+    names = [r[0] for r in row]
+    fandoms = [r[1] for r in row]
+    ships = [r[2] for r in row]
+    ratings = [r[3] for r in row]
+    links = [r[4] for r in row]
+    reviews = [r[5] for r in row]
+    abstracts = [r[6] for r in row]
+
+    # Compute similarity scores using SVD-enhanced TF-IDF
+    similarity_scores_fandoms = compute_svd_similarity(fandoms, user_query)
+    similarity_scores_ships = compute_svd_similarity(ships, user_query)
+    similarity_scores_abstracts = compute_svd_similarity(abstracts, user_query)
+    similarity_scores_reviews = compute_svd_similarity(reviews, user_query)
+
+    # Combine all similarities into a single score
+    combined_similarities = (
+        similarity_scores_fandoms +
+        similarity_scores_ships +
+        similarity_scores_abstracts +
+        similarity_scores_reviews
+    )
+
+    total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
+    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+
+    # Filter and return results above a similarity threshold
+    nonzero_values = [v for v in total_sim_dict.values() if v != 0]
+    average = sum(nonzero_values) / len(nonzero_values) if nonzero_values else 0
+
+    ourentries = []
+    for x in sorted_keys:
+        if total_sim_dict[x] > average * 2:
+            final_name = names[x - 1]
+            final_ship = ships[x - 1]
+            final_fandom = fandoms[x - 1]
+            final_rating = ratings[x - 1]
+            final_abstract = abstracts[x - 1]
+            final_link = links[x - 1]
+
+            e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
+            ourentries.append(e)
+
+    return ourentries
 
 # def sql_search(text):
 #     """
