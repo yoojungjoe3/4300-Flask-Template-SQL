@@ -376,7 +376,7 @@ def SVD_vector_search(user_query):
 
     ourentries = []
     for idx in sorted_keys:
-        if total_sim_dict[idx] > avg * 2:
+        if total_sim_dict[idx] > avg:
             i = idx - 1
             entry = Entry(
                 precomputed['names_raw'][i],
