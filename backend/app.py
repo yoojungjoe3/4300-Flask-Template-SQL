@@ -285,7 +285,7 @@ def SVD_vector_search0(user_query):
     # )
 
     # Set weights:
-    weight_names     = 2.0  
+    weight_names     = 1.5  
     weight_fandoms   = 3.0
     weight_ships     = 3.0
     weight_abstracts = 1.0
@@ -369,6 +369,9 @@ def SVD_vector_search(user_query):
     # Create dictionary mapping record index (starting at 1) to similarity score
     total_sim_dict = {i + 1: float(score) for i, score in enumerate(combined_similarities)}
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+    print("total_sim_dict" = + str(total_sim_dict))
+    print("sorted_keys" = + str(sorted_keys))
+
 
     # Optional: filter by threshold relative to average nonzero similarity
     nonzero = [score for score in total_sim_dict.values() if score != 0]
