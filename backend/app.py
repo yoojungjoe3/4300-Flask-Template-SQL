@@ -285,9 +285,9 @@ def SVD_vector_search0(user_query):
     # )
 
     # Set weights:
-    weight_names     = 3.0  
-    weight_fandoms   = 2.0
-    weight_ships     = 1.5
+    weight_names     = 2.0  
+    weight_fandoms   = 3.0
+    weight_ships     = 3.0
     weight_abstracts = 1.0
     weight_reviews   = 1.0
 
