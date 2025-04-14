@@ -376,7 +376,7 @@ def SVD_vector_search(user_query):
 
     ourentries = []
     for idx in sorted_keys:
-        if total_sim_dict[idx] > avg:
+        if total_sim_dict[idx] > avg and len(ourentries) < 10:
             i = idx - 1
             entry = Entry(
                 precomputed['names_raw'][i],
@@ -389,7 +389,7 @@ def SVD_vector_search(user_query):
             ourentries.append(entry)
     return ourentries
 
-
+ 
 @app.route("/")
 def home():
     return render_template('base.html', Name="sample html")
