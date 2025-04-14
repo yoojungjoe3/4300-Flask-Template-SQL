@@ -369,8 +369,8 @@ def SVD_vector_search(user_query):
     # Create dictionary mapping record index (starting at 1) to similarity score
     total_sim_dict = {i + 1: float(score) for i, score in enumerate(combined_similarities)}
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
-    print("total_sim_dict" = + str(total_sim_dict))
-    print("sorted_keys" = + str(sorted_keys))
+    print("total_sim_dict" + str(total_sim_dict))
+    print("sorted_keys" + str(sorted_keys))
 
 
     # Optional: filter by threshold relative to average nonzero similarity
