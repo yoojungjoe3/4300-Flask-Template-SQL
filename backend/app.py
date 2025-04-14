@@ -41,7 +41,7 @@ class Entry:
         self.rating = rating
         self.abstract = abstract
         self.link = link
-        if fandom == ('"Harry Potter"'):
+        if fandom == ('"Harry Potter"') or fandom == ('Harry Potter'):
             self.image = "/static/images/dumbly.jpg"
         elif fandom == ('"Kardashians"'):
             self.image ="/static/images/KIM.jpg"
