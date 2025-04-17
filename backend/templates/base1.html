@@ -1,0 +1,184 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Flaskr</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
+  rel="stylesheet">
+
+<body style="background-color: #758e89;">
+  <div class="full-body-container">
+    <div class="top-text">
+      <div class="google-colors">
+        <div style="position: relative; display: inline-block;">
+          <img src="{{ url_for('static', filename='images/title_gif.gif') }}" alt="QuillQuest Logo"
+            style="position: relative; z-index: 1; width: 400px; height: auto;" />
+          <!-- <img src="{{ url_for('static', filename='images/project.png') }}" alt="QuillQuest Logo"
+            style="position: relative; z-index: 1; width: 500px; height: auto;" /> -->
+          <!-- <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
+            QuillQuest
+          </h1> -->
+          <!-- <img src="{{ url_for('static', filename='images/QK5b.gif') }}"
+            style="position: absolute; top: 0; left: 0; width: 100px; height: auto; z-index: 0; opacity: 0.6;" /> -->
+        </div>
+      </div>
+      <!-- <div class="input-box" onclick="sendFocus()">
+        <img src="{{ url_for('static', filename='images/search2.png') }}" />
+        <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val"
+          onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
+      </div> -->
+      <div class="input-box">
+        <img src="{{ url_for('static', filename='images/search2.png') }}" />
+        <!-- Remove onkeyup from the input -->
+        <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val"
+          style="font-family: 'Courier New', monospace; background-color:white;">
+        <!-- Add a search button -->
+        <button style="font-family: 'Courier New', monospace; background-color: grey;color: white;" onclick="filterText()">Search</button>
+      </div>
+    </div>
+    <div id="answer-box">
+
+    </div>
+  </div>
+
+  <script>
+
+    // const imageMap = {
+    //   "Harry Potter": "/static/images/dumbly.jpg",
+    //   "Kardashians": "/static/images/dumbly.jpg",
+    //   "One Direction": "/static/images/OneD.jpeg",
+    //   "Hunger Games": "/static/images/HG.jpeg",
+    //   "Princess Diaries": "/static/images/PD.jpg"
+    // };
+
+    //Put every entry box through here to be shown on the screen
+    function answerBoxTemplate(name, ship, fandom, rating, abstract, link, image) {
+      // console.log(fandom);
+      // image = "/static/images/dumbly.jpg"
+      // if (fandom == "Harry Potter"){
+      //   image = "/static/images/dumbly.jpg"
+      // }else if(fandom == "Kardashians")
+      // {image = "/static/images/dumbly.jpg"}
+      // else if(fandom == "One Direction")
+      // {image = "/static/images/OneD.jpeg"}
+      // else if(fandom == "Hunger Games")
+      // {image = "/static/images/HG.jpeg"}
+      // else if(fandom == "Princess Diaries")
+      // {image = "/static/images/PD.jpg"}
+      // console.log(imageMap[fandom]);
+      // const image = imageMap[fandom];
+      // console.log(image);
+      return `
+        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">${name}</h2>
+            <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
+          </div>
+          <p> ${fandom} | ${ship} </p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <img src= "${image}"" style="max-width: 100px;" />
+            <span style="font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
+          </div>
+        </div>`;
+    }
+    function sendFocus() {
+      document.getElementById('filter-text-val').focus()
+    }
+
+
+    //This function fiters the inputed search text
+    // function filterText(){
+    //     document.getElementById("answer-box").innerHTML = "" //Clears the Display
+    //     console.log(document.getElementById("filter-text-val").value) //puts text into the console
+    //     fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
+    //     .then((response) => response.json())  //converts JSON response to javascript
+    //     .then((data) => data.forEach(row => {  //updates the display
+
+    //         let tempDiv = document.createElement("div")
+    //         tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
+    //         document.getElementById("answer-box").appendChild(tempDiv)
+    //     }));
+
+    // }
+    function filterText() {
+      // Clear previous results
+      //const answerBox = document.getElementById("answer-box");
+      //answerBox.innerHTML = "";
+      document.getElementById("answer-box").innerHTML = ""
+      // Get the user's search text
+      const searchText = document.getElementById("filter-text-val").value;
+      console.log(searchText);
+
+      // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
+      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
+        // .then(response => {
+        .then((response => response.json()))
+        //this statement gets printed
+        //  console.log("just fetched");
+        //  console.log("response: "+ response.text())
+        //  console.log(response.ok)
+        //  if (!response.ok) {
+        //    // Optionally handle HTTP errors
+        //    return response.text().then(text => {
+        //      throw new Error("Server error: " + text);
+        //    });
+        //  }
+        //return response.json();
+
+        .then(data => {
+          //we never get to this statement...
+          console.log("end fetched");
+          console.log(data);
+
+          if (data.ourentries && data.ourentries.length === 0) {
+            //Print Error message
+            // answerbox.innerHTML = "<p>No results found</p>";}
+            document.getElementById("answer-box").innerHTML = "<p>No Fanfics Match Your Query :(</p>";
+          }
+          else {
+            for (entry in data.ourentries) {
+              //call AnswerBlocktemplate
+              // Generate the HTML
+              const answerBoxHTML = answerBoxTemplate(data.ourentries[entry].name, data.ourentries[entry].ship, data.ourentries[entry].fandom, data.ourentries[entry].rating, data.ourentries[entry].abstract, data.ourentries[entry].link, data.ourentries[entry].image);
+
+              // Inject it into the DOM
+              document.getElementById("answer-box").innerHTML += answerBoxHTML;
+
+            }
+          }
+
+          // Display the top fanfics first
+          if (data.top_fic) {
+            const topDiv = document.createElement("div");
+            topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
+            document.getElementById("answer-box").appendChild(topDiv);
+          }
+          if (data.second_fic) {
+            const secondDiv = document.createElement("div");
+            secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
+            document.getElementById("answer-box").appendChild(secondDiv);
+          }
+
+          // Then loop over the results and display them
+          if (data.results && data.results.length > 0) {
+            const list = document.createElement("ul");
+            data.results.forEach(record => {
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `<strong>${record.Name}</strong> — Similarity: ${record.similarity}<br>
+                                    <em>${record.Abstract}</em>`;
+              list.appendChild(listItem);
+            });
+            // answerBoxTemplate.appendChild(list);
+            document.getElementById("answer-box").appendChild(list);
+          } else {
+            answerBoxTemplate.innerHTML = "<p>we found no results matching your query</p>";
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          answerBoxTemplate.innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+    }
+
+  </script>
+</body>
