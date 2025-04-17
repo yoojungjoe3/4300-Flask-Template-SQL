@@ -21,12 +21,27 @@
     </div>
 
     <script>
-
-        function answerBoxTemplate(title,titleDesc){
-            return `<div class=''>
-                <h3 class='episode-title'>${title}</h3>
-                <p class='episode-desc'>${titleDesc}</p>
-            </div>`
+        //Answer box implementation including the like and dislike buttons for user feedback by calling sendFeedback()
+        function answerBoxTemplate(name, ship, fandom, rating, abstract, link, image, docIndex, queryText) {
+          return `
+            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0;">${name}</h2>
+                <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
+              </div>
+              <p>${fandom} | ${ship}</p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <img src="${image}" style="max-width: 100px;" />
+                <span style="font-size: 14px; padding: 4px 8px;">
+                  ${abstract}<br>
+                  <a href="${link}" target="_blank">Press Here to Start Reading!</a>
+                </span>
+              </div>
+              <div style="margin-top: 10px;">
+                <button onclick="sendFeedback('${queryText}', ${docIndex}, 1)">👍 Like</button>
+                <button onclick="sendFeedback('${queryText}', ${docIndex}, -1)">👎 Dislike</button>
+              </div>
+            </div>`;
         }
 
         function sendFocus(){
@@ -73,36 +88,28 @@
           //  }
            //return response.json();
         
-        .then(data => {
-          //we never get to this statement...
-          console.log("end fetched");
-          console.log(data);
-          // Display the top fanfics first
-          if (data.top_fic) {
-            const topDiv = document.createElement("div");
-            topDiv.innerHTML = `<h3>Top Fanfic:</h3><p>${data.top_fic}</p>`;
-            document.getElementById("answer-box").appendChild(topDiv);
-          }
-          if (data.second_fic) {
-            const secondDiv = document.createElement("div");
-            secondDiv.innerHTML = `<h3>Second Best Fanfic:</h3><p>${data.second_fic}</p>`;
-            document.getElementById("answer-box").appendChild(secondDiv);
-          }
-
-          // Then loop over the results and display them
-          if (data.results && data.results.length > 0) {
-            const list = document.createElement("ul");
-            data.results.forEach(record => {
-              const listItem = document.createElement("li");
-              listItem.innerHTML = `<strong>${record.Name}</strong> — Similarity: ${record.similarity}<br>
-                                    <em>${record.Abstract}</em>`;
-              list.appendChild(listItem);
-            });
-            answerBoxTemplate.appendChild(list);
-          } else {
-            answerBoxTemplate.innerHTML = "<p>No results found.</p>";
-          }
-        })
+           //passing the index via docIndex and queryText
+           .then(data => {
+             const queryText = document.getElementById("filter-text-val").value;
+             if (data.ourentries && data.ourentries.length === 0) {
+                document.getElementById("answer-box").innerHTML = "<p>No Fanfics Match Your Query :(</p>";
+             } else {
+               data.ourentries.forEach((entry, i) => {
+                 const answerBoxHTML = answerBoxTemplate(
+                   entry.name,
+                   entry.ship,
+                   entry.fandom,
+                   entry.rating,
+                   entry.abstract,
+                   entry.link,
+                   entry.image,
+                   i,               // docIndex
+                   queryText        // queryText
+                 );
+                 document.getElementById("answer-box").innerHTML += answerBoxHTML;
+               });
+             }
+           })
         .catch(error => {
           console.error("Fetch error:", error);
           answerBoxTemplate.innerHTML = `<p>Error: ${error.message}</p>`;
