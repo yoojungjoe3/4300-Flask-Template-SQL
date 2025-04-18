@@ -34,13 +34,11 @@ app.secret_key = 'bobby24'
 CORS(app)
 
 #Using the Flask session object
-#setting session data
-with app.test_request_context():
+@app.route('/set_feedback')
+def set_feedback():
     session['feedback'] = [{"doc_index": 1, "feedback": 1}]
-#accessing session data
-data = session.get('feedback', [])
-#clearing session data
-session.pop('feedback', None)
+    rdata = session.get('feedback', [])
+    session.pop('feedback', None)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 init_sql_path = os.path.join(current_dir, "..", "init.sql")
