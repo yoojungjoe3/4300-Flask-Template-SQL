@@ -25,7 +25,13 @@ LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "kardashiandb"
 
 # Initialize database handler and load init.sql into the database
-mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER, LOCAL_MYSQL_USER_PASSWORD, LOCAL_MYSQL_PORT, LOCAL_MYSQL_DATABASE)
+mysql_engine = MySQLDatabaseHandler(
+    user=LOCAL_MYSQL_USER,
+    password=LOCAL_MYSQL_USER_PASSWORD,
+    port=LOCAL_MYSQL_PORT,
+    db=LOCAL_MYSQL_DATABASE,
+    host=MYSQL_HOST
+)
 mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
