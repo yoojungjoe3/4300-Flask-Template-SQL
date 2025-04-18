@@ -35,7 +35,8 @@ CORS(app)
 
 #Using the Flask session object
 #setting session data
-session['feedback'] = [{"doc_index": 1, "feedback": 1}]
+with app.test_request_context():
+    session['feedback'] = [{"doc_index": 1, "feedback": 1}]
 #accessing session data
 data = session.get('feedback', [])
 #clearing session data
