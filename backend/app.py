@@ -19,13 +19,20 @@ from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
-LOCAL_MYSQL_USER = "root"
-LOCAL_MYSQL_USER_PASSWORD = "bobbob"
-LOCAL_MYSQL_PORT = 3306
-LOCAL_MYSQL_DATABASE = "kardashiandb"
+MYSQL_HOST = "quill_quest_db"
+MYSQL_USER = "root"
+MYSQL_PASSWORD = "bobbob"
+MYSQL_PORT = 3306
+MYSQL_DB = "kardashiandb"
 
 # Initialize database handler and load init.sql into the database
-mysql_engine = MySQLDatabaseHandler(LOCAL_MYSQL_USER, LOCAL_MYSQL_USER_PASSWORD, LOCAL_MYSQL_PORT, LOCAL_MYSQL_DATABASE)
+mysql_engine = MySQLDatabaseHandler(
+    user=MYSQL_USER,
+    password=MYSQL_PASSWORD,
+    port=MYSQL_PORT,
+    database=MYSQL_DB,
+    host=MYSQL_HOST
+)
 mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
