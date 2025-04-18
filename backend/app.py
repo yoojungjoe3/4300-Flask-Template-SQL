@@ -292,16 +292,9 @@ def fics_search():
 def submit_feedback():
     data = request.get_json()
 
-    feedback_data = session.get('feedback', [])
+    feedback_id = store_feedback_in_db(data)
 
-    feedback_data.append({
-        "query_text": data['query_text'],
-        "doc_index": data['doc_index'],
-        "feedback": data['feedback']
-    })
-
-    session['feedback'] = feedback_data
-    session.modified = True
+    session['feedback_id'] = feedback_id
 
     return jsonify({"status": "success", "stored_feedback": feedback_data})
 if 'DB_NAME' not in os.environ:
