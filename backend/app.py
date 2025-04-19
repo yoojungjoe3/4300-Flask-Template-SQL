@@ -90,7 +90,7 @@ def initialize_precomputed():
     tfidf_matrix = vectorizer.fit_transform(all_text)
 
     #reduce with SVD
-    svd = TrunatedSVD(n_components=100)
+    svd = TruncatedSVD(n_components=100)
     svd_matrix = svd.fit_transform(tfidf_matrix)
 
     #storing global objects
