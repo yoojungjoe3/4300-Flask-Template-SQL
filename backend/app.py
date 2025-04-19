@@ -82,6 +82,9 @@ def initialize_precomputed():
     reviews   = [r[5] for r in rows]
     abstracts = [r[6] for r in rows]
 
+    #Combining fields
+    all_text = names + fandoms + ships + reviews + abstracts
+
     #Building TF-IDF vectorizer 
     vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
     tfidf_matrix = vectorizer.fit_transform(all_text)
