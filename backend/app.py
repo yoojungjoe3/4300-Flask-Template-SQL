@@ -82,21 +82,24 @@ def initialize_precomputed():
     reviews   = [r[5] for r in rows]
     abstracts = [r[6] for r in rows]
 
+    #Building TF-IDF vectorizer 
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
+    tfidf_matrix = vectorizer.fit_transform(all_text)
+
+    #reduce with SVD
+    svd = TrunatedSVD(n_components=100)
+    svd_matrix = svd.fit_transform(tfidf_matrix)
+
+    #storing global objects
     global precomputed
+    precomputed['vectorizer'] = vectorizer
+    precomputed['svd'] = svd
+
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
     precomputed['ships']     = precompute_field(ships)
     precomputed['reviews']   = precompute_field(reviews)
     precomputed['abstracts'] = precompute_field(abstracts)
-
-    # Store raw versions to reconstruct final Entry objects:
-    precomputed['names_raw']     = names
-    precomputed['fandoms_raw']   = fandoms
-    precomputed['ships_raw']     = ships
-    precomputed['ratings']       = ratings
-    precomputed['links']         = links
-    precomputed['reviews_raw']   = reviews
-    precomputed['abstracts_raw'] = abstracts
 
 # Precompute on startup
 initialize_precomputed()
