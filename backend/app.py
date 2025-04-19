@@ -19,7 +19,7 @@ from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
-MYSQL_HOST = "quill_quest_db"
+MYSQL_HOST = "localhost"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "bobbob"
 MYSQL_PORT = 3306
