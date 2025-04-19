@@ -20,19 +20,13 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
 MYSQL_HOST = "quill_quest_db"
-#MYSQL_USER = "root"
+MYSQL_USER = "root"
 MYSQL_PASSWORD = "bobbob"
 MYSQL_PORT = 3306
 MYSQL_DB = "kardashiandb"
 
 # Initialize database handler and load init.sql into the database
-mysql_engine = MySQLDatabaseHandler(
-    #user=MYSQL_USER,
-    password=MYSQL_PASSWORD,
-    port=MYSQL_PORT,
-    database=MYSQL_DB,
-    host=MYSQL_HOST
-)
+mysql_engine = MySQLDatabaseHandler(MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_DB, MYSQL_HOST)
 mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
