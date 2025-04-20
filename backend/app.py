@@ -316,13 +316,26 @@ def fics_search():
         "ourentries": ourentries_dicts,
     })
 
+def store_feedback_in_db(data):
+    feedback_list = data.get("feedback", [])
+    for feedback_item in feedback_list:
+        doc_index = feedback_item.get("doc_index")
+        feedback_value = feedback_item.get("feedback")
+
+        mysql_engine.execute_query(
+            "INSERT INTO feedback (doc_index, feedback_value) VALUES (%s, %s);",
+            (doc_index, feedback_value)
+        )
+    return 1
+    
 #the /submit_feedback route
 @app.route('/submit_feedback', methods=['POST'])
 def submit_feedback():
     data = request.get_json()
 
     feedback_id = store_feedback_in_db(data)
-    session['feedback_id'] = feedback_id
+
+    session['feedback'] = data.get("feedback", [])
 
     return jsonify({
         "status": "success",
