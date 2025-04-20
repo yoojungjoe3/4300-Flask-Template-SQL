@@ -76,6 +76,7 @@ def initialize_precomputed():
     """
 
     #storing global objects
+    print("started")
     global precomputed
 
     query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
@@ -100,12 +101,14 @@ def initialize_precomputed():
 
     precomputed['vectorizer'] = vectorizer
     precomputed['svd'] = svd
+
     #Field-specific precomputed SVDs
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
     precomputed['ships']     = precompute_field(ships)
     precomputed['reviews']   = precompute_field(reviews)
     precomputed['abstracts'] = precompute_field(abstracts)
+
     #Storing raw fields for Entry objects
     precomputed['names_raw']     = names
     precomputed['fandoms_raw']   = fandoms
@@ -114,7 +117,7 @@ def initialize_precomputed():
     precomputed['links']         = links
     precomputed['reviews_raw']   = reviews
     precomputed['abstracts_raw'] = abstracts
-
+    print("finished")
 
 # Precompute on startup
 @app.before_first_request
