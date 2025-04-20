@@ -36,6 +36,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
 precomputed = {}
+initialize_precomputed()
 
 #Using the Flask session object
 @app.route('/set_feedback')
@@ -120,7 +121,6 @@ def initialize_precomputed():
 @app.before_first_request
 def startup_precompute():
     try:
-        precomputed = {}
         initialize_precomputed()
     except Exception as e:
         print("Error during precompute initialization", e)
