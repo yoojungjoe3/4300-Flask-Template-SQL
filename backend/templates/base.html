@@ -47,14 +47,16 @@
       const searchText = document.getElementById("filter-text-val").value;
 
       fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
-        .then(async (response) => {
-          const contentType = response.headers.get("content-type");
-          if (!response.ok || !contentType || !contentType.includes("application/json")) {
-            const text = await response.text();  // Try to print the raw HTML error
-            console.error("Non-JSON response received:", text);
-            throw new Error("Server error - check console for details.");
+        .then(response => response.json())
+        .then(data => {
+          if (data.ourentries && data.ourentries.length === 0) {
+            document.getElementById("answer-box").innerHTML = "<p>No Fanfics Match Your Query :(</p>";
+          } else {
+            data.ourentries.forEach((entry, index) => {
+              const html = answerBoxTemplate(entry.name, entry.ship, entry.fandom, entry.rating, entry.abstract, entry.link, entry.image, index);
+              document.getElementById("answer-box").innerHTML += html;
+            });
           }
-          return response.json();
         })
         .catch(error => {
           console.error("Fetch error:", error);
