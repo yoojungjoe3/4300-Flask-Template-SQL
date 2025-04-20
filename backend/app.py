@@ -305,20 +305,12 @@ def fics_search():
 #the /submit_feedback route
 @app.route('/submit_feedback', methods=['POST'])
 def submit_feedback():
-    try:
-        data = request.get_json()
+    data = request.get_json()
 
-        if not data or 'feedback' not in data:
-            return jsonify({"status": "error", "message": "Missing 'feedback' field"}), 400
+    feedback_id = store_feedback_in_db(data)
 
-        feedback_data = data['feedback']
-        print("Received feedback:", feedback_data)
+    session['feedback_id'] = feedback_id
 
-        # You can process or store this data here later
-        return jsonify({"status": "success", "stored_feedback": feedback_data}), 200
-
-    except Exception as e:
-        print("Error handling feedback:", e)
-        return jsonify({"status": "error", "message": str(e)}), 500
+    return jsonify({"status": "success", "stored_feedback": feedback_data})
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
