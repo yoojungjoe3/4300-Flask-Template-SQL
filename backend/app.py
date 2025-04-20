@@ -31,7 +31,8 @@ mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
 #Flask session secret key
-app.secret_key = 'bobby24'
+#app.secret_key = 'bobby24'
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
 #Using the Flask session object
