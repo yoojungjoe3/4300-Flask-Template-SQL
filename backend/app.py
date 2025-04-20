@@ -83,6 +83,11 @@ def initialize_precomputed():
     reviews   = [r[5] for r in rows]
     abstracts = [r[6] for r in rows]
 
+    #storing global objects
+    global precomputed
+    precomputed['vectorizer'] = vectorizer
+    precomputed['svd'] = svd
+
     #Combining fields
     all_text = names + fandoms + ships + reviews + abstracts
 
@@ -93,11 +98,6 @@ def initialize_precomputed():
     #reduce with SVD
     svd = TruncatedSVD(n_components=100)
     svd_matrix = svd.fit_transform(tfidf_matrix)
-
-    #storing global objects
-    global precomputed
-    precomputed['vectorizer'] = vectorizer
-    precomputed['svd'] = svd
 
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
