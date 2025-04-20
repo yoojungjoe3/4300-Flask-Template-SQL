@@ -321,10 +321,16 @@ def fics_search():
 def submit_feedback():
     data = request.get_json()
 
-    feedback_id = store_feedback_in_db(data)
+    #feedback_id = store_feedback_in_db(data)
+    #session['feedback_id'] = feedback_id
 
-    session['feedback_id'] = feedback_id
+    feedback_id = 1
+    session['feedback'] = data.get('feedback', [])
 
-    return jsonify({"status": "success", "stored_feedback": feedback_data})
+    return jsonify({
+        "status": "success",
+        "stored_feedback": session['feedback'],
+        "feedback_id": feedback_id
+    })
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
