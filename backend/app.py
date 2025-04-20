@@ -72,6 +72,10 @@ def initialize_precomputed():
     for fields: names, fandoms, ships, reviews, abstracts.
     Also stores the raw lists for later reconstruction.
     """
+
+    #storing global objects
+    global precomputed
+
     query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
     rows = list(mysql_engine.query_selector(query))
     # Extract raw fields:
@@ -83,28 +87,32 @@ def initialize_precomputed():
     reviews   = [r[5] for r in rows]
     abstracts = [r[6] for r in rows]
 
-    #storing global objects
-    global precomputed
-
     #Combining fields
     all_text = names + fandoms + ships + reviews + abstracts
-
     #Building TF-IDF vectorizer 
     vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
     tfidf_matrix = vectorizer.fit_transform(all_text)
-
     #reduce with SVD
     svd = TruncatedSVD(n_components=100)
     svd_matrix = svd.fit_transform(tfidf_matrix)
 
     precomputed['vectorizer'] = vectorizer
     precomputed['svd'] = svd
-
+    #Field-specific precomputed SVDs
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
     precomputed['ships']     = precompute_field(ships)
     precomputed['reviews']   = precompute_field(reviews)
     precomputed['abstracts'] = precompute_field(abstracts)
+    #Storing raw fields for Entry objects
+    precomputed['names_raw']     = names
+    precomputed['fandoms_raw']   = fandoms
+    precomputed['ships_raw']     = ships
+    precomputed['ratings']       = ratings
+    precomputed['links']         = links
+    precomputed['reviews_raw']   = reviews
+    precomputed['abstracts_raw'] = abstracts
+
 
 # Precompute on startup
 @app.before_first_request
