@@ -105,6 +105,7 @@ def initialize_precomputed():
     #Field-specific precomputed SVDs
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
+    print("fandoms precomputed")
     precomputed['ships']     = precompute_field(ships)
     precomputed['reviews']   = precompute_field(reviews)
     precomputed['abstracts'] = precompute_field(abstracts)
@@ -119,9 +120,11 @@ def initialize_precomputed():
     precomputed['abstracts_raw'] = abstracts
     print("finished")
 
+    print("Precomputed keys:", list(precomputed.keys()))
 # Precompute on startup
 @app.before_first_request
 def startup_precompute():
+    global precomputed
     try:
         initialize_precomputed()
     except Exception as e:
