@@ -4,117 +4,77 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap" rel="stylesheet">
-<body style="background-color: #F5F5DC;">
-    <div class="full-body-container">
-        <div class="top-text">
-            <div class="google-colors">
-                <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive;">QuillQuest</h1>
-            </div>
-            <div class="input-box" onclick="sendFocus()">
-                <img src="{{ url_for('static', filename='images/search2.png') }}" />
-                <input name="Name" placeholder="Search for your fanfic" id="filter-text-val" onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
-            </div>
-        </div>
-        <div id="answer-box">
 
+<body style="background-color: #758e89;">
+  <div class="full-body-container">
+    <div class="top-text">
+      <div class="google-colors">
+        <div style="position: relative; display: inline-block;">
+          <img src="{{ url_for('static', filename='images/title_gif.gif') }}" alt="QuillQuest Logo" style="position: relative; z-index: 1; width: 400px; height: auto;" />
         </div>
+      </div>
+      <div class="input-box">
+        <img src="{{ url_for('static', filename='images/search2.png') }}" />
+        <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val" style="font-family: 'Courier New', monospace; background-color:white;">
+        <button style="font-family: 'Courier New', monospace; background-color: grey;color: white;" onclick="filterText()">Search</button>
+      </div>
     </div>
+    <div id="answer-box"></div>
+  </div>
 
-    <script>
-        //Answer box implementation including the like and dislike buttons for user feedback by calling sendFeedback()
-        function answerBoxTemplate(name, ship, fandom, rating, abstract, link, image, docIndex, queryText) {
-          return `
-            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin: 0;">${name}</h2>
-                <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
-              </div>
-              <p>${fandom} | ${ship}</p>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <img src="${image}" style="max-width: 100px;" />
-                <span style="font-size: 14px; padding: 4px 8px;">
-                  ${abstract}<br>
-                  <a href="${link}" target="_blank">Press Here to Start Reading!</a>
-                </span>
-              </div>
-              <div style="margin-top: 10px;">
-                <button onclick="sendFeedback('${queryText}', ${docIndex}, 1)">👍 Like</button>
-                <button onclick="sendFeedback('${queryText}', ${docIndex}, -1)">👎 Dislike</button>
-              </div>
-            </div>`;
-        }
+  <script>
+    function answerBoxTemplate(name, ship, fandom, rating, abstract, link, image, index) {
+      return `
+        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">${name}</h2>
+            <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
+          </div>
+          <p>${fandom} | ${ship}</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <img src="${image}" style="max-width: 100px;" />
+            <span style="font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
+          </div>
+          <div style="margin-top: 10px;">
+            <button onclick="submitFeedback(${index}, 1)" style="margin-right: 10px;">👍 Like</button>
+            <button onclick="submitFeedback(${index}, -1)">👎 Dislike</button>
+          </div>
+        </div>`;
+    }
 
-        function sendFocus(){
-            document.getElementById('filter-text-val').focus()
-        }
-        
-
-        //This function fiters the inputed search text
-        // function filterText(){
-        //     document.getElementById("answer-box").innerHTML = "" //Clears the Display
-        //     console.log(document.getElementById("filter-text-val").value) //puts text into the console
-        //     fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString()) //calls the fics_search in app.py
-        //     .then((response) => response.json())  //converts JSON response to javascript
-        //     .then((data) => data.forEach(row => {  //updates the display
-                
-        //         let tempDiv = document.createElement("div")
-        //         tempDiv.innerHTML = answerBoxTemplate(row.Name, row.Abstract)
-        //         document.getElementById("answer-box").appendChild(tempDiv)
-        //     }));
-
-        // }
-    function filterText(){
-      // Clear previous results
-      //const answerBox = document.getElementById("answer-box");
-      //answerBox.innerHTML = "";
-      document.getElementById("answer-box").innerHTML = ""
-      // Get the user's search text
+    function filterText() {
+      document.getElementById("answer-box").innerHTML = "";
       const searchText = document.getElementById("filter-text-val").value;
-      console.log(searchText);
 
-      // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
-      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value }).toString())
-        // .then(response => {
-        .then((response => response.json()))
-           //this statement gets printed
-          //  console.log("just fetched");
-          //  console.log("response: "+ response.text())
-          //  console.log(response.ok)
-          //  if (!response.ok) {
-          //    // Optionally handle HTTP errors
-          //    return response.text().then(text => {
-          //      throw new Error("Server error: " + text);
-          //    });
-          //  }
-           //return response.json();
-        
-           //passing the index via docIndex and queryText
-           .then(data => {
-             const queryText = document.getElementById("filter-text-val").value;
-             if (data.ourentries && data.ourentries.length === 0) {
-                document.getElementById("answer-box").innerHTML = "<p>No Fanfics Match Your Query :(</p>";
-             } else {
-               data.ourentries.forEach((entry, i) => {
-                 const answerBoxHTML = answerBoxTemplate(
-                   entry.name,
-                   entry.ship,
-                   entry.fandom,
-                   entry.rating,
-                   entry.abstract,
-                   entry.link,
-                   entry.image,
-                   i,               // docIndex
-                   queryText        // queryText
-                 );
-                 document.getElementById("answer-box").innerHTML += answerBoxHTML;
-               });
-             }
-           })
+      fetch("/fics?" + new URLSearchParams({ Name: searchText }).toString())
+        .then(response => response.json())
+        .then(data => {
+          if (data.ourentries && data.ourentries.length === 0) {
+            document.getElementById("answer-box").innerHTML = "<p>No Fanfics Match Your Query :(</p>";
+          } else {
+            data.ourentries.forEach((entry, index) => {
+              const html = answerBoxTemplate(entry.name, entry.ship, entry.fandom, entry.rating, entry.abstract, entry.link, entry.image, index);
+              document.getElementById("answer-box").innerHTML += html;
+            });
+          }
+        })
         .catch(error => {
           console.error("Fetch error:", error);
-          answerBoxTemplate.innerHTML = `<p>Error: ${error.message}</p>`;
+          document.getElementById("answer-box").innerHTML = `<p>Error: ${error.message}</p>`;
         });
-  }
- 
-    </script>
+    }
+
+    function submitFeedback(index, feedback) {
+      fetch('/submit_feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ feedback: [{ doc_index: index, feedback: feedback }] })
+      })
+      .then(response => response.json())
+      .then(data => console.log("Feedback submitted:", data))
+      .catch(error => console.error("Feedback error:", error));
+    }
+  </script>
 </body>

@@ -278,7 +278,7 @@ def SVD_vector_search(user_query):
  
 @app.route("/")
 def home():
-    return render_template('base1.html', Name="sample html")
+    return render_template('base.html', Name="sample html")
 
 
 def clean_text(user_query):
