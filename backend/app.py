@@ -217,7 +217,7 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
 
     return alpha * query_vec + adjustment
 
-def compute_precomputed_similarity(precomputed_matrix, query_text, query_vector=None):
+def compute_precomputed_similarity(field_data, query_text, query_vector=None):
     """
     Given a precomputed dictionary (with vectorizer, svd, and matrix)
     and an injected query vector, transform the query and compute cosine similarities.
