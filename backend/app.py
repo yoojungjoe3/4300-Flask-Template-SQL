@@ -106,7 +106,12 @@ def initialize_precomputed():
     precomputed['abstracts'] = precompute_field(abstracts)
 
 # Precompute on startup
-initialize_precomputed()
+@app.before_first_request
+def startup_precompute():
+    try:
+        initialize_precomputed()
+    except Exception as e:
+        print("Error during precompute initialization", e)
 
 #function creates object in the format that we want printed out
 class Entry:
