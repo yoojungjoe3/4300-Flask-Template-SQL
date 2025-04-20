@@ -118,6 +118,7 @@ def initialize_precomputed():
 @app.before_first_request
 def startup_precompute():
     try:
+        precomputed = {}
         initialize_precomputed()
     except Exception as e:
         print("Error during precompute initialization", e)
