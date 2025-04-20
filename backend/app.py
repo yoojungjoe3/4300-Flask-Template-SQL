@@ -35,8 +35,6 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
-precomputed = {}
-
 #Using the Flask session object
 @app.route('/set_feedback')
 def set_feedback():
@@ -77,7 +75,7 @@ def initialize_precomputed():
 
     #storing global objects
     print("started")
-    global precomputed
+    precomputed.clear()
 
     query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
     rows = list(mysql_engine.query_selector(query))
@@ -124,7 +122,6 @@ def initialize_precomputed():
 # Precompute on startup
 @app.before_first_request
 def startup_precompute():
-    global precomputed
     try:
         initialize_precomputed()
     except Exception as e:
@@ -244,7 +241,7 @@ def SVD_vector_search(user_query):
     query_vector = precomputed['fandoms']['svd'].transform(tfidf_vec)
 
     # Apply Rocchio feedback based on one field (e.g., fandoms)
-    query_vector = apply_rocchio_feedback(query_vector, precomputed['fandoms'])
+    query_vector = apply_rocchio_feedback(query_vector, precomputed['fandoms']['matrix'])
 
     # Now compute similarities using the adjusted query vector
     sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vector)
