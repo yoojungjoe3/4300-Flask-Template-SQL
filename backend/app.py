@@ -34,9 +34,7 @@ app = Flask(__name__)
 #app.secret_key = 'bobby24'
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
-
 precomputed = {}
-initialize_precomputed()
 
 #Using the Flask session object
 @app.route('/set_feedback')
