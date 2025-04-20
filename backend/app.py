@@ -230,11 +230,11 @@ def SVD_vector_search(user_query):
     query_vector = apply_rocchio_feedback(query_vector, precomputed['fandoms'])
 
     # Now compute similarities using the adjusted query vector
-    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vector)
-    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query, query_vector)
-    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vector)
-    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vector)
-    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vector)
+    sim_names     = compute_precomputed_similarity(precomputed['names']['matrix'], cleaned_query, query_vector)
+    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms']['matrix'], cleaned_query, query_vector)
+    sim_ships     = compute_precomputed_similarity(precomputed['ships']['matrix'], cleaned_query, query_vector)
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts']['matrix'], cleaned_query, query_vector)
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews']['matrix'], cleaned_query, query_vector)
     # Set weights for each field
     weight_names     = 3.0
     weight_fandoms   = 2.0
