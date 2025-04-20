@@ -321,11 +321,8 @@ def fics_search():
 def submit_feedback():
     data = request.get_json()
 
-    #feedback_id = store_feedback_in_db(data)
-    #session['feedback_id'] = feedback_id
-
-    feedback_id = 1
-    session['feedback'] = data.get('feedback', [])
+    feedback_id = store_feedback_in_db(data)
+    session['feedback_id'] = feedback_id
 
     return jsonify({
         "status": "success",
