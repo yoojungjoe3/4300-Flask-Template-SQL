@@ -19,8 +19,7 @@ from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 
 # Database credentials (adjust if needed)
-#MYSQL_HOST = "quill_quest_db"
-MYSQL_HOST = "localhost"
+MYSQL_HOST = "quill_quest_db"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "bobbob"
 MYSQL_PORT = 3306
@@ -32,7 +31,7 @@ mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
 #Flask session secret key
-#app.secret_key = 'bobby24'
+app.secret_key = 'bobby24'
 CORS(app)
 
 #Using the Flask session object
