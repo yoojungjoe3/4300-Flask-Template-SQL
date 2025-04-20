@@ -234,8 +234,8 @@ def SVD_vector_search(user_query):
     cleaned_query = clean_text(user_query)
 
     # Generate query vector from TF-IDF + SVD
-    tfidf_vec = precomputed['vectorizer'].transform([cleaned_query])
-    query_vector = precomputed['svd'].transform(tfidf_vec)
+    tfidf_vec = precomputed['fandoms'['vectorizer']].transform([cleaned_query])
+    query_vector = precomputed['fandoms']['svd'].transform(tfidf_vec)
 
     # Apply Rocchio feedback based on one field (e.g., fandoms)
     query_vector = apply_rocchio_feedback(query_vector, precomputed['fandoms'])
