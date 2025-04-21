@@ -349,8 +349,11 @@ def store_feedback_in_db(data):
         feedback_value = feedback_item.get("feedback")
 
         mysql_engine.execute_query(
-            "INSERT INTO feedback (doc_index, feedback_value) VALUES (%s, %s);",
-            (doc_index, feedback_value)
+            "INSERT INTO feedback (doc_index, feedback_value) VALUES (:doc_index, :feedback_value);",
+            {
+                "doc_index": doc_index,
+                "feedback_value": feedback_value
+            }
         )
     return 1
     
