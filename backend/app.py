@@ -35,6 +35,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
+#tests
+try:
+    print(">>> Running initialize_precomputed...")
+    initialize_precomputed()
+    print(">>> Done with initialize_precomputed.")
+except Exception as e:
+    print(">>> ERROR initializing precomputed:", e)
+
 #Using the Flask session object
 @app.route('/set_feedback')
 def set_feedback():
@@ -118,7 +126,9 @@ def initialize_precomputed():
     precomputed['abstracts_raw'] = abstracts
     print("finished")
 
-    print("Precomputed keys:", list(precomputed.keys()))
+    #test
+    print(">>> precomputed keys after init:", list(precomputed.keys()))
+
 # Precompute on startup
 #@app.before_first_request
 #def startup_precompute():
@@ -305,6 +315,9 @@ def clean_text(user_query):
 @app.route("/fics")
 def fics_search():
     user_query = request.args.get("Name")
+    #tests
+    print(">>> User query:", user_query)
+    print(">>> Current precomputed keys:", list(precomputed.keys()))
     if not user_query:
         return ("Please input a query :)"), 400
 
