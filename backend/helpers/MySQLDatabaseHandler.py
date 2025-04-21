@@ -1,5 +1,6 @@
 import os
 import sqlalchemy as db
+import sqlalchemy import text
 
 class MySQLDatabaseHandler(object):
     
@@ -37,9 +38,8 @@ class MySQLDatabaseHandler(object):
         return data
     
     def execute_query(self, query, params=None):
-        with self.connection.cursor() as cursor:
-            cursor.execute(query, params)
-        self.connection.commit()
+        with self.engine.connect() as connection:
+            connection.execute(text(query), params)
 
     def load_file_into_db(self,file_path = None):
         # if MySQLDatabaseHandler.IS_DOCKER:
