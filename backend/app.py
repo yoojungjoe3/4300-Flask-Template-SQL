@@ -177,7 +177,7 @@ def compute_svd_similarity(texts, query, n_components=100, return_matrix=False):
     # Replace empty or whitespace-only texts with a placeholder (space)
     texts = [text if text.strip() != "" else " " for text in texts]
 
-    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), stop_words='english')
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5))
     tfidf_matrix = vectorizer.fit_transform(texts + [query])
     
     # Reduce number of dimensions to capture semantic patterns
