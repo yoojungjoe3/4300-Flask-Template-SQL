@@ -120,8 +120,8 @@ def initialize_precomputed():
 
     print("Precomputed keys:", list(precomputed.keys()))
 # Precompute on startup
-@app.before_first_request
-def startup_precompute():
+#@app.before_first_request
+#def startup_precompute():
     try:
         initialize_precomputed()
     except Exception as e:
