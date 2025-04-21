@@ -1,6 +1,6 @@
 import os
 import sqlalchemy as db
-import sqlalchemy import text
+from sqlalchemy import text
 
 class MySQLDatabaseHandler(object):
     
