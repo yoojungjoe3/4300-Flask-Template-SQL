@@ -122,10 +122,12 @@ def initialize_precomputed():
     print(">>> precomputed keys after init:", list(precomputed.keys()))
 
 # Precompute on startup
-#@app.before_first_request
-#def startup_precompute():
+@app.before_first_request
+def startup_precompute():
     try:
+        print(">>> Running initialize_precomputed...")
         initialize_precomputed()
+        print(">>> Done with initialize_precomputed.")
     except Exception as e:
         print("Error during precompute initialization", e)
 
@@ -355,6 +357,6 @@ try:
     print(">>> Done with initialize_precomputed.")
 except Exception as e:
     print(">>> ERROR initializing precomputed:", e)
-    
+
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
