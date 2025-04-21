@@ -34,7 +34,12 @@ class MySQLDatabaseHandler(object):
         conn = self.lease_connection()
         data = conn.execute(query)
         return data
-
+    
+    def execute_query(self, query, params=None):
+        with self.connection.cursor() as cursor:
+            cursor.execute(query, params)
+        self.connection.commit()
+        
     def load_file_into_db(self,file_path = None):
         # if MySQLDatabaseHandler.IS_DOCKER:
         #     return
