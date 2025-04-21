@@ -69,6 +69,7 @@ def precompute_field(field_texts, n_components=100):
     return {"vectorizer": vectorizer, "svd": svd, "matrix": reduced_matrix}
 
 def wait_for_mysql_connection(engine, max_attempts=10, delay=3):
+    import pymysql.err
     for attempt in range(max_attempts):
         try:
             print(f">>> Attempt {attempt + 1} to connect to MySQL...")
@@ -78,7 +79,11 @@ def wait_for_mysql_connection(engine, max_attempts=10, delay=3):
         except pymysql.err.OperationalError as e:
             print(f">>> Connection failed (attempt {attempt + 1}): {e}")
             time.sleep(delay)
+        except Exception as e:
+            print(f">>> Unexpected error (attempt {attempt + 1}): {e}")
+            time.sleep(delay)
     raise Exception("Could not connect to MySQL after multiple attempts")
+
 def initialize_precomputed():
     """
     Loads all entries from the database and precomputes the TF-IDF + SVD representations
