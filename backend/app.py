@@ -35,14 +35,6 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
-#tests
-try:
-    print(">>> Running initialize_precomputed...")
-    initialize_precomputed()
-    print(">>> Done with initialize_precomputed.")
-except Exception as e:
-    print(">>> ERROR initializing precomputed:", e)
-
 #Using the Flask session object
 @app.route('/set_feedback')
 def set_feedback():
@@ -355,5 +347,14 @@ def submit_feedback():
         "stored_feedback": session['feedback'],
         "feedback_id": feedback_id
     })
+
+#tests
+try:
+    print(">>> Running initialize_precomputed...")
+    initialize_precomputed()
+    print(">>> Done with initialize_precomputed.")
+except Exception as e:
+    print(">>> ERROR initializing precomputed:", e)
+    
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
