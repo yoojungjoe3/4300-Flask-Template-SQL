@@ -12,7 +12,8 @@ class MySQLDatabaseHandler(object):
         self.MYSQL_USER_PASSWORD = "admin" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_USER_PASSWORD
         self.MYSQL_PORT = 3306 if MySQLDatabaseHandler.IS_DOCKER else MYSQL_PORT
         self.MYSQL_DATABASE = "kardashiandb" if MySQLDatabaseHandler.IS_DOCKER else MYSQL_DATABASE
-        self.engine = self.validate_connection()
+        self.connection = self.validate_connection()
+        self.engine = self.connection
 
     def validate_connection(self):
         print(f"mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_USER_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}")
@@ -39,7 +40,7 @@ class MySQLDatabaseHandler(object):
         with self.connection.cursor() as cursor:
             cursor.execute(query, params)
         self.connection.commit()
-        
+
     def load_file_into_db(self,file_path = None):
         # if MySQLDatabaseHandler.IS_DOCKER:
         #     return
