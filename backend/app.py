@@ -2,6 +2,8 @@
 import json
 import os
 import re
+import time
+import pymysql.err
 import numpy as np
 from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
@@ -66,6 +68,17 @@ def precompute_field(field_texts, n_components=100):
     reduced_matrix = svd.fit_transform(tfidf_matrix)
     return {"vectorizer": vectorizer, "svd": svd, "matrix": reduced_matrix}
 
+def wait_for_mysql_connection(engine, max_attempts=10, delay=3):
+    for attempt in range(max_attempts):
+        try:
+            print(f">>> Attempt {attempt + 1} to connect to MySQL...")
+            engine.query_selector("SELECT 1")
+            print(">>> MySQL connection established.")
+            return
+        except pymysql.err.OperationalError as e:
+            print(f">>> Connection failed (attempt {attempt + 1}): {e}")
+            time.sleep(delay)
+    raise Exception("Could not connect to MySQL after multiple attempts")
 def initialize_precomputed():
     """
     Loads all entries from the database and precomputes the TF-IDF + SVD representations
@@ -77,6 +90,7 @@ def initialize_precomputed():
     print("started")
     precomputed.clear()
 
+    wait_for_mysql_connection(mysql_engine)
     query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
     rows = list(mysql_engine.query_selector(query))
     # Extract raw fields:
