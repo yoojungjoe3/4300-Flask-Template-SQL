@@ -259,19 +259,19 @@ def SVD_vector_search(user_query):
     """
     cleaned_query = clean_text(user_query)
 
-    # Generate query vector from TF-IDF + SVD
-    tfidf_vec = precomputed['fandoms']['vectorizer'].transform([cleaned_query])
-    query_vector = precomputed['fandoms']['svd'].transform(tfidf_vec)
-
-    # Apply Rocchio feedback based on one field (e.g., fandoms)
-    query_vector = apply_rocchio_feedback(query_vector, precomputed['fandoms']['matrix'])
+    query_vectors = {}
+    for field in ['names', 'fandoms', 'ships', 'reviews', 'abstracts']
+        tfidf_ved = precomputed[field]['vectorizer'].transform([cleaned_query])
+        reduced_vec = precomputed[field]['svd'].transform(tfidf_vec)
+        rocchio_vec = apply_rocchio_feedback(reduced_vec, precomputed[field]['matrix'])
+        query_vectors[field] = rocchio_vec
 
     # Now compute similarities using the adjusted query vector
-    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vector)
-    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query, query_vector)
-    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vector)
-    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vector)
-    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vector)
+    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vectors['names'])
+    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query, query_vectors['fandoms'])
+    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vector['ships'])
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vector['abstracts'])
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vector['reviews'])
     # Set weights for each field
     weight_names     = 3.0
     weight_fandoms   = 2.0
