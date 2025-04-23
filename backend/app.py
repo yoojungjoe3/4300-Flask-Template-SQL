@@ -38,11 +38,11 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
 
 #Using the Flask session object
-@app.route('/set_feedback')
-def set_feedback():
-    session['feedback'] = [{"doc_index": 1, "feedback": 1}]
-    rdata = session.get('feedback', [])
-    session.pop('feedback', None)
+#@app.route('/set_feedback')
+#def set_feedback():
+#    session['feedback'] = [{"doc_index": 1, "feedback": 1}]
+#    rdata = session.get('feedback', [])
+#    session.pop('feedback', None)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 init_sql_path = os.path.join(current_dir, "..", "init.sql")
@@ -215,7 +215,7 @@ def compute_svd_similarity(texts, query, n_components=100, return_matrix=False):
     
 #Rocchio feedback function for implementing user feedback through likes and dislikes
 def apply_rocchio_feedback(query_vec, doc_matrix):
-    feedback = session.pop('feedback', [])
+    feedback = session.get('feedback', [])
     if not isinstance(feedback, list):
         feedback = []
     liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
