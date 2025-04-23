@@ -258,7 +258,10 @@ def compute_precomputed_similarity(field_data, query_text, query_vector=None):
     if query_vector is None:
         tfidf_vec = field_data['vectorizer'].transform([query_text])
         query_vector = field_data['svd'].transform(tfidf_vec)
-    return cosine_similarity(query_vector, field_data['matrix']).flatten()
+        print(">>> Recomputing query vector from scratch")
+    else:
+        print(">>> Using custom Rocchio-adjusted query vector")
+        return cosine_similarity(query_vector, field_data['matrix']).flatten()
 
 def SVD_vector_search(user_query):
     """
