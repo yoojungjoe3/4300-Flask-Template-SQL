@@ -218,10 +218,6 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
     feedback = session.get('feedback', [])
     disiked_indices = {f['doc_index'] - 1 for f in feedback if f['feedback'] == -1}
 
-    for idx in sorted_keys:
-        if idx - 1 in disliked_indices:
-            continue 
-
     if not isinstance(feedback, list):
         feedback = []
     liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
@@ -297,13 +293,16 @@ def SVD_vector_search(user_query):
     # Create dictionary mapping record index (starting at 1) to similarity score
     total_sim_dict = {i + 1: float(score) for i, score in enumerate(combined_similarities)}
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+    #for idx in sorted_keys:
+    #    if idx - 1 in disliked_indices:
+    #        continue 
     # print("total_sim_dict" + str(total_sim_dict))
     # print("sorted_keys" + str(sorted_keys))
 
 
     # Optional: filter by threshold relative to average nonzero similarity
-    nonzero = [score for score in total_sim_dict.values() if score != 0]
-    avg = sum(nonzero)/len(nonzero) if nonzero else 0
+    #nonzero = [score for score in total_sim_dict.values() if score != 0]
+    #avg = sum(nonzero)/len(nonzero) if nonzero else 0
 
     ourentries = []
     for idx in sorted_keys:
