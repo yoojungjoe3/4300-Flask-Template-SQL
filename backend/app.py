@@ -260,8 +260,8 @@ def SVD_vector_search(user_query):
     cleaned_query = clean_text(user_query)
 
     query_vectors = {}
-    for field in ['names', 'fandoms', 'ships', 'reviews', 'abstracts']
-        tfidf_ved = precomputed[field]['vectorizer'].transform([cleaned_query])
+    for field in ['names', 'fandoms', 'ships', 'reviews', 'abstracts']:
+        tfidf_vec = precomputed[field]['vectorizer'].transform([cleaned_query])
         reduced_vec = precomputed[field]['svd'].transform(tfidf_vec)
         rocchio_vec = apply_rocchio_feedback(reduced_vec, precomputed[field]['matrix'])
         query_vectors[field] = rocchio_vec
