@@ -304,6 +304,9 @@ def SVD_vector_search(user_query):
     #nonzero = [score for score in total_sim_dict.values() if score != 0]
     #avg = sum(nonzero)/len(nonzero) if nonzero else 0
 
+    nonzero = [score for score in total_sim_dict.values() if score != 0]
+    avg = sum(nonzero) / len(nonzero) if nonzero else 0
+
     ourentries = []
     for idx in sorted_keys:
         if total_sim_dict[idx] > avg and len(ourentries) < 10:
