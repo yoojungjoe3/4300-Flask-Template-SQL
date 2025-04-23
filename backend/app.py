@@ -216,6 +216,12 @@ def compute_svd_similarity(texts, query, n_components=100, return_matrix=False):
 #Rocchio feedback function for implementing user feedback through likes and dislikes
 def apply_rocchio_feedback(query_vec, doc_matrix):
     feedback = session.get('feedback', [])
+    disiked_indices = {f['doc_index'] - 1 for f in feedback if f['feedback'] == -1}
+
+    for idx in sorted_keys:
+        if idx - 1 in disliked_indices:
+            continue 
+
     if not isinstance(feedback, list):
         feedback = []
     liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
