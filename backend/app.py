@@ -269,9 +269,9 @@ def SVD_vector_search(user_query):
     # Now compute similarities using the adjusted query vector
     sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vectors['names'])
     sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query, query_vectors['fandoms'])
-    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vector['ships'])
-    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vector['abstracts'])
-    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vector['reviews'])
+    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vectors['ships'])
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vectors['abstracts'])
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vectors['reviews'])
     # Set weights for each field
     weight_names     = 3.0
     weight_fandoms   = 2.0
