@@ -221,9 +221,9 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
     liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
     disliked = [f['doc_index'] for f in feedback if f['feedback'] == -1]
 
-    alpha = 1.0
-    beta = 0.75
-    gamma = 0.25
+    alpha = 0.6
+    beta = 1.0
+    gamma = 1.0
 
     if not liked and not disliked:
         return query_vec
