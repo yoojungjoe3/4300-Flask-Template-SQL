@@ -216,8 +216,6 @@ def compute_svd_similarity(texts, query, n_components=100, return_matrix=False):
 #Rocchio feedback function for implementing user feedback through likes and dislikes
 def apply_rocchio_feedback(query_vec, doc_matrix):
     feedback = session.get('feedback', [])
-    disiked_indices = {f['doc_index'] - 1 for f in feedback if f['feedback'] == -1}
-
     if not isinstance(feedback, list):
         feedback = []
     liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
@@ -230,9 +228,12 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
     if not liked and not disliked:
         return query_vec
 
+    query_vec = query_vec.flatten()
     adjustment = np.zeros_like(query_vec)
+
     valid_liked = [i for i in liked if 0 <= i < len(doc_matrix)]
     valid_disliked = [i for i in disliked if 0 <= i < len(doc_matrix)]
+    
     if valid_liked:
         liked_vecs = doc_matrix[valid_liked]
         adjustment += beta * liked_vecs.mean(axis=0)
@@ -240,7 +241,8 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
         disliked_vecs = doc_matrix[valid_disliked]
         adjustment -= gamma * disliked_vecs.mean(axis=0)
 
-    return alpha * query_vec + adjustment
+    adjusted_query = alpha * query_vec + adjustment
+    return adjusted_query.reshape(1, -1)
 
 def compute_precomputed_similarity(field_data, query_text, query_vector=None):
     """
@@ -293,6 +295,8 @@ def SVD_vector_search(user_query):
     # Create dictionary mapping record index (starting at 1) to similarity score
     total_sim_dict = {i + 1: float(score) for i, score in enumerate(combined_similarities)}
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+
+    disliked_indices = {f['doc_index'] - 1 for f in session.get("feedback", []) if f['feedback'] == -1}
     #for idx in sorted_keys:
     #    if idx - 1 in disliked_indices:
     #        continue 
@@ -303,9 +307,6 @@ def SVD_vector_search(user_query):
     # Optional: filter by threshold relative to average nonzero similarity
     #nonzero = [score for score in total_sim_dict.values() if score != 0]
     #avg = sum(nonzero)/len(nonzero) if nonzero else 0
-
-    nonzero = [score for score in total_sim_dict.values() if score != 0]
-    avg = sum(nonzero) / len(nonzero) if nonzero else 0
 
     ourentries = []
     for idx in sorted_keys:
