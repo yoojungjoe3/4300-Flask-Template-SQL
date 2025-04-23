@@ -244,6 +244,11 @@ def apply_rocchio_feedback(query_vec, doc_matrix):
     adjusted_query = alpha * query_vec + adjustment
     return adjusted_query.reshape(1, -1)
 
+    print(">>> Rocchio DEBUG")
+    print("Original query vec (first 3 dims):", query_vec[:3])
+    print("Adjustment vec (first 3 dims):", adjustment[:3])
+    print("Adjusted query vec (first 3 dims):", adjusted_query[:3])
+
 def compute_precomputed_similarity(field_data, query_text, query_vector=None):
     """
     Given a precomputed dictionary (with vectorizer, svd, and matrix)
