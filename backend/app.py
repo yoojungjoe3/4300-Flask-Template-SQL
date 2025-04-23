@@ -305,8 +305,8 @@ def SVD_vector_search(user_query):
 
 
     # Optional: filter by threshold relative to average nonzero similarity
-    #nonzero = [score for score in total_sim_dict.values() if score != 0]
-    #avg = sum(nonzero)/len(nonzero) if nonzero else 0
+    nonzero = [score for score in total_sim_dict.values() if score != 0]
+    avg = sum(nonzero)/len(nonzero) if nonzero else 0
 
     ourentries = []
     for idx in sorted_keys:
