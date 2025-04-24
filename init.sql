@@ -9,13 +9,6 @@ CREATE TABLE IF NOT EXISTS fics (
     Abstract TEXT
 );
 
-CREATE TABLE IF NOT EXISTS feedback (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    doc_index INT NOT NULL,
-    feedback_value INT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 INSERT INTO fics (Name, Fandom, Ships, Rating, Link, Review, Abstract) VALUES ('"A star for a summers day"', '"Harry Potter"', '"Jegulus"', '14', '"https://archiveofourown.org/works/47889160"', '"Oh this was lovely! It felt very appropriate that Andromeda would hate the summers because of her upbringing, but I love how Ted could bring her joy for the summer. This was so beatifully written, I really enjoyed it <3"', '"A love story that begins on an artificial summer day in January and ends with a tearful farewell beneath the unforgiving August sun."');
 INSERT INTO fics (Name, Fandom, Ships, Rating, Link, Review, Abstract) VALUES ('"Sirius black and the mystery girl"', '"Harry Potter"', '"Wolfstar"', '3,827', '"https://archiveofourown.org/works/32395003"', '"this was so cute i love marauders and lily friendship i love this concept it was so well written thank u 4 writing it"', '"You cannot tell me who you are with? Lily smiles at him hopefully. Sirius laughs. Alright Evans, if you are so curious, I have a proposition for you. We will set up a little bet, you have until the end of the school year - so two months - to work out who I am dating, or... he pauses to think and with an evil smirk decides, or you have to ask your crush out on a date."');
 INSERT INTO fics (Name, Fandom, Ships, Rating, Link, Review, Abstract) VALUES ('"Sirius black and the mystery girl"', '"Harry Potter"', '"Wolfstar"', '3,827', '"https://archiveofourown.org/works/32395003"', '"this was so cute i love marauders and lily friendship i love this concept it was so well written thank u 4 writing it"', '"You cannot tell me who you are with? Lily smiles at him hopefully. Sirius laughs. Alright Evans, if you are so curious, I have a proposition for you. We will set up a little bet, you have until the end of the school year - so two months - to work out who I am dating, or... he pauses to think and with an evil smirk decides, or you have to ask your crush out on a date."');
