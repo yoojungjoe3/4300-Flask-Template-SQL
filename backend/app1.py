@@ -1,8 +1,11 @@
+#Confirm: Are the search results rankings changed based on the user feedback thru the like and dislike buttons?
 import json
 import os
 import re
+import time
+import pymysql.err
 import numpy as np
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -29,7 +32,17 @@ mysql_engine = MySQLDatabaseHandler(MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT, MYSQ
 mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
+#Flask session secret key
+#app.secret_key = 'bobby24'
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_dev_key")
 CORS(app)
+
+#Using the Flask session object
+#@app.route('/set_feedback')
+#def set_feedback():
+#    session['feedback'] = [{"doc_index": 1, "feedback": 1}]
+#    rdata = session.get('feedback', [])
+#    session.pop('feedback', None)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 init_sql_path = os.path.join(current_dir, "..", "init.sql")
@@ -55,12 +68,34 @@ def precompute_field(field_texts, n_components=100):
     reduced_matrix = svd.fit_transform(tfidf_matrix)
     return {"vectorizer": vectorizer, "svd": svd, "matrix": reduced_matrix}
 
+def wait_for_mysql_connection(engine, max_attempts=10, delay=3):
+    import pymysql.err
+    for attempt in range(max_attempts):
+        try:
+            print(f">>> Attempt {attempt + 1} to connect to MySQL...")
+            engine.query_selector("SELECT 1")
+            print(">>> MySQL connection established.")
+            return
+        except pymysql.err.OperationalError as e:
+            print(f">>> Connection failed (attempt {attempt + 1}): {e}")
+            time.sleep(delay)
+        except Exception as e:
+            print(f">>> Unexpected error (attempt {attempt + 1}): {e}")
+            time.sleep(delay)
+    raise Exception("Could not connect to MySQL after multiple attempts")
+
 def initialize_precomputed():
     """
     Loads all entries from the database and precomputes the TF-IDF + SVD representations
     for fields: names, fandoms, ships, reviews, abstracts.
     Also stores the raw lists for later reconstruction.
     """
+
+    #storing global objects
+    print("started")
+    precomputed.clear()
+
+    wait_for_mysql_connection(mysql_engine)
     query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
     rows = list(mysql_engine.query_selector(query))
     # Extract raw fields:
@@ -72,14 +107,27 @@ def initialize_precomputed():
     reviews   = [r[5] for r in rows]
     abstracts = [r[6] for r in rows]
 
-    global precomputed
+    #Combining fields
+    all_text = names + fandoms + ships + reviews + abstracts
+    #Building TF-IDF vectorizer 
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
+    tfidf_matrix = vectorizer.fit_transform(all_text)
+    #reduce with SVD
+    svd = TruncatedSVD(n_components=100)
+    svd_matrix = svd.fit_transform(tfidf_matrix)
+
+    precomputed['vectorizer'] = vectorizer
+    precomputed['svd'] = svd
+
+    #Field-specific precomputed SVDs
     precomputed['names']     = precompute_field(names)
     precomputed['fandoms']   = precompute_field(fandoms)
+    print("fandoms precomputed")
     precomputed['ships']     = precompute_field(ships)
     precomputed['reviews']   = precompute_field(reviews)
     precomputed['abstracts'] = precompute_field(abstracts)
 
-    # Store raw versions to reconstruct final Entry objects:
+    #Storing raw fields for Entry objects
     precomputed['names_raw']     = names
     precomputed['fandoms_raw']   = fandoms
     precomputed['ships_raw']     = ships
@@ -87,9 +135,20 @@ def initialize_precomputed():
     precomputed['links']         = links
     precomputed['reviews_raw']   = reviews
     precomputed['abstracts_raw'] = abstracts
+    print("finished")
+
+    #test
+    print(">>> precomputed keys after init:", list(precomputed.keys()))
 
 # Precompute on startup
-initialize_precomputed()
+@app.before_first_request
+def startup_precompute():
+    try:
+        print(">>> Running initialize_precomputed...")
+        initialize_precomputed()
+        print(">>> Done with initialize_precomputed.")
+    except Exception as e:
+        print("Error during precompute initialization", e)
 
 #function creates object in the format that we want printed out
 class Entry:
@@ -129,107 +188,7 @@ class Entry:
     def __repr__(self):
         return f"Entry(Name: {self.name}, Ships: {self.ship}, Fandoms: {self.fandom}, Ratings: {self.rating}, Abstracts: {self.abstract}, Links: {self.link}, Image: {self.image})"
 
-def vector_search(user_query):
-    """
-    Compute combined similarity scores for the query against both fandoms and ships.
-    Also prints the top two fanfic titles.
-    Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
-    """
-    # Clean and prepare the query
-    words = clean_text(user_query).split()
-
-    query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
-    row = list(mysql_engine.query_selector(query))
-
-    names = [r[0] for r in row]
-    fandoms = [r[1] for r in row]
-    ships = [r[2] for r in row]
-    ratings = [r[3] for r in row]
-    links = [r[4] for r in row]
-    reviews = [r[5] for r in row]
-    abstracts = [r[6] for r in row]
-
-    #vectorizer = TfidfVectorizer()
-    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3,5), stop_words='english')
-
-    # Create a list to store the similarity scores for the query words
-    similarity_scores_fandoms = []
-    similarity_scores_ships = []
-    similarity_scores_abstracts = []
-    similarity_scores_reviews = []
-
-    # Iterate through each word in the query and compare with fandoms and ships
-    for word in words:
-        # fandoms 
-        join_fandom_query = fandoms + [word]
-        tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query) # PROBLEM LINE!!!
-        query_vector_fandoms = tfidf_matrix_fandoms[-1]
-        candidate_vectors_fandoms = tfidf_matrix_fandoms[:-1]
-        similarities_fandoms = cosine_similarity(query_vector_fandoms, candidate_vectors_fandoms).flatten()
-        similarity_scores_fandoms.append(similarities_fandoms)
-
-        # ships 
-        join_ship_query = ships + [word]
-        tfidf_matrix_ships = vectorizer.fit_transform(join_ship_query)
-        query_vector_ships = tfidf_matrix_ships[-1]
-        candidate_vectors_ships = tfidf_matrix_ships[:-1]
-        similarities_ships = cosine_similarity(query_vector_ships, candidate_vectors_ships).flatten()
-        similarity_scores_ships.append(similarities_ships)
-
-        # abstract
-        join_abstract_query = abstracts + [word]
-        tfidf_matrix_abstracts = vectorizer.fit_transform(join_abstract_query)
-        query_vector_abstracts = tfidf_matrix_abstracts[-1]
-        candidate_vectors_abstracts = tfidf_matrix_abstracts[:-1]
-        similarities_abstracts = cosine_similarity(query_vector_abstracts, candidate_vectors_abstracts).flatten()
-        similarity_scores_abstracts.append(similarities_abstracts)
-
-        # reviews
-        join_reviews_query = reviews + [word]
-        tfidf_matrix_reviews = vectorizer.fit_transform(join_reviews_query)
-        query_vector_reviews = tfidf_matrix_reviews[-1]
-        candidate_vectors_reviews = tfidf_matrix_reviews[:-1]
-        similarities_reviews = cosine_similarity(query_vector_reviews, candidate_vectors_reviews).flatten()
-        similarity_scores_reviews.append(similarities_reviews)
-
-    # Combine the similarity scores for each query word (sum of all word similarities)
-    combined_fandom_similarities = np.sum(np.array(similarity_scores_fandoms), axis=0)
-    combined_ship_similarities = np.sum(np.array(similarity_scores_ships), axis=0)
-    combined_abstract_similarities = np.sum(np.array(similarity_scores_abstracts), axis=0)
-    combined_review_similarities = np.sum(np.array(similarity_scores_reviews), axis=0)
-
-    # Combine fandom and ship similarities
-    combined_similarities = combined_fandom_similarities + combined_ship_similarities + combined_abstract_similarities + combined_review_similarities
-    total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    # print(total_sim_dict)
-
-    # Sort keys (record indices) by similarity score (highest first)
-    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
-
-    ourentries =[]
-
-    nonzero_values = [v for v in total_sim_dict.values() if v != 0]
-    if nonzero_values:
-        average = sum(nonzero_values) / len(nonzero_values)
-    else:
-        average = 0
-
-    for x in sorted_keys: 
-        if total_sim_dict[x] > average * 2: 
-            final_name = names[x-1]
-            final_ship = ships[x-1]
-            final_fandom = fandoms[x-1]
-            final_rating = ratings[x-1]
-            final_abstract = abstracts[x-1]
-            final_link = links[x-1]
-
-
-            e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
-            ourentries.append(e)
-     
-    return ourentries
-
-def compute_svd_similarity0(texts, query, n_components=100):
+def compute_svd_similarity(texts, query, n_components=100, return_matrix=False):
     """
     Compute cosine similarity between a user query and a list of texts
     using TF-IDF vectorization followed by SVD dimensionality reduction.
@@ -237,7 +196,7 @@ def compute_svd_similarity0(texts, query, n_components=100):
     # Replace empty or whitespace-only texts with a placeholder (space)
     texts = [text if text.strip() != "" else " " for text in texts]
 
-    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), stop_words='english')
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5))
     tfidf_matrix = vectorizer.fit_transform(texts + [query])
     
     # Reduce number of dimensions to capture semantic patterns
@@ -248,93 +207,61 @@ def compute_svd_similarity0(texts, query, n_components=100):
     query_vector = reduced_matrix[-1]
     candidate_vectors = reduced_matrix[:-1]
     similarities = cosine_similarity([query_vector], candidate_vectors).flatten()
-    return similarities
 
-def SVD_vector_search0(user_query):
-    """
-    Compute combined similarity scores for the query against both fandoms and ships,
-    abstracts, and reviews using SVD-reduced TF-IDF vectors.
-    Returns a list of Entry objects for the best matches.
-    """
-    words = clean_text(user_query)
+    if return_matrix:
+        return similarities, query_vector, candidate_vectors
+    else:
+        return similarities
+    
+#Rocchio feedback function for implementing user feedback through likes and dislikes
+def apply_rocchio_feedback(query_vec, doc_matrix):
+    feedback = session.get('feedback', [])
+    if not isinstance(feedback, list):
+        feedback = []
+    liked = [f['doc_index'] for f in feedback if f['feedback'] == 1]
+    disliked = [f['doc_index'] for f in feedback if f['feedback'] == -1]
 
-    query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
-    row = list(mysql_engine.query_selector(query))
+    alpha = 0.1
+    beta = 2.0
+    gamma = 0.5
 
-    names = [r[0] for r in row]
-    fandoms = [r[1] for r in row]
-    ships = [r[2] for r in row]
-    ratings = [r[3] for r in row]
-    links = [r[4] for r in row]
-    reviews = [r[5] for r in row]
-    abstracts = [r[6] for r in row]
+    if not liked and not disliked:
+        return query_vec
 
-    # Compute similarity scores using SVD-enhanced TF-IDF
-    similarity_scores_fandoms = compute_svd_similarity(fandoms, words)
-    similarity_scores_ships = compute_svd_similarity(ships, words)
-    similarity_scores_abstracts = compute_svd_similarity(abstracts, words)
-    similarity_scores_reviews = compute_svd_similarity(reviews, words)
-    similarity_scores_names = compute_svd_similarity(names, words)
+    query_vec = query_vec.flatten()
+    adjustment = np.zeros_like(query_vec)
 
-    # # Combine all similarities into a single score
-    # combined_similarities = (
-    #     similarity_scores_fandoms +
-    #     similarity_scores_ships +
-    #     similarity_scores_abstracts +
-    #     similarity_scores_reviews + 
-    #     similarity_scores_names
-    # )
+    valid_liked = [i - 1 for i in liked if 0 <= i - 1 < len(doc_matrix)]
+    valid_disliked = [i - 1 for i in disliked if 0 <= i - 1 < len(doc_matrix)]
+    
+    if valid_liked:
+        liked_vecs = doc_matrix[valid_liked]
+        adjustment += beta * liked_vecs.mean(axis=0)
+    if valid_disliked:
+        disliked_vecs = doc_matrix[valid_disliked]
+        adjustment -= gamma * disliked_vecs.mean(axis=0)
 
-    # Set weights:
-    weight_names     = 1.5  
-    weight_fandoms   = 3.0
-    weight_ships     = 3.0
-    weight_abstracts = 1.0
-    weight_reviews   = 1.0
+    adjusted_query = alpha * query_vec + adjustment
+    return adjusted_query.reshape(1, -1)
 
-    # Combine weighted similarities (elementwise sum)
-    combined_similarities = (
-        weight_names     * similarity_scores_names +
-        weight_fandoms   * similarity_scores_fandoms +
-        weight_ships     * similarity_scores_ships +
-        weight_abstracts * similarity_scores_abstracts +
-        weight_reviews   * similarity_scores_reviews
-    )
+    print(">>> Rocchio DEBUG")
+    print("Original query vec (first 3 dims):", query_vec[:3])
+    print("Adjustment vec (first 3 dims):", adjustment[:3])
+    print("Adjusted query vec (first 3 dims):", adjusted_query[:3])
 
-    total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
-
-    # Filter and return results above a similarity threshold
-    nonzero_values = [v for v in total_sim_dict.values() if v != 0]
-    average = sum(nonzero_values) / len(nonzero_values) if nonzero_values else 0
-
-    ourentries = []
-    for x in sorted_keys:
-        if total_sim_dict[x] > average * 2:
-            final_name = names[x - 1]
-            final_ship = ships[x - 1]
-            final_fandom = fandoms[x - 1]
-            final_rating = ratings[x - 1]
-            final_abstract = abstracts[x - 1]
-            final_link = links[x - 1]
-
-            e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
-            ourentries.append(e)
-
-    return ourentries
-
-def compute_precomputed_similarity(precomputed_obj, query):
+def compute_precomputed_similarity(field_data, query_text, query_vector=None):
     """
     Given a precomputed dictionary (with vectorizer, svd, and matrix)
-    and a query, transform the query and compute cosine similarities.
+    and an injected query vector, transform the query and compute cosine similarities.
     Returns a 1D array of cosine similarities.
     """
-    vectorizer = precomputed_obj["vectorizer"]
-    svd = precomputed_obj["svd"]
-    matrix = precomputed_obj["matrix"]
-    query_tfidf = vectorizer.transform([query])
-    query_reduced = svd.transform(query_tfidf)
-    return cosine_similarity(query_reduced, matrix).flatten()
+    if query_vector is None:
+        tfidf_vec = field_data['vectorizer'].transform([query_text])
+        query_vector = field_data['svd'].transform(tfidf_vec)
+        print(">>> Recomputing query vector from scratch")
+    else:
+        print(">>> Using custom Rocchio-adjusted query vector")
+        return cosine_similarity(query_vector, field_data['matrix']).flatten()
 
 def SVD_vector_search(user_query):
     """
@@ -344,13 +271,19 @@ def SVD_vector_search(user_query):
     """
     cleaned_query = clean_text(user_query)
 
-    # Compute similarities for each field using the precomputed objects:
-    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
-    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
-    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
-    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
-    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
+    query_vectors = {}
+    for field in ['names', 'fandoms', 'ships', 'reviews', 'abstracts']:
+        tfidf_vec = precomputed[field]['vectorizer'].transform([cleaned_query])
+        reduced_vec = precomputed[field]['svd'].transform(tfidf_vec)
+        rocchio_vec = apply_rocchio_feedback(reduced_vec, precomputed[field]['matrix'])
+        query_vectors[field] = rocchio_vec
 
+    # Now compute similarities using the adjusted query vector
+    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query, query_vectors['names'])
+    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query, query_vectors['fandoms'])
+    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query, query_vectors['ships'])
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query, query_vectors['abstracts'])
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query, query_vectors['reviews'])
     # Set weights for each field
     weight_names     = 3.0
     weight_fandoms   = 2.0
@@ -370,6 +303,11 @@ def SVD_vector_search(user_query):
     # Create dictionary mapping record index (starting at 1) to similarity score
     total_sim_dict = {i + 1: float(score) for i, score in enumerate(combined_similarities)}
     sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
+
+    disliked_indices = {f['doc_index'] - 1 for f in session.get("feedback", []) if f['feedback'] == -1}
+    #for idx in sorted_keys:
+    #    if idx - 1 in disliked_indices:
+    #        continue 
     # print("total_sim_dict" + str(total_sim_dict))
     # print("sorted_keys" + str(sorted_keys))
 
@@ -407,6 +345,9 @@ def clean_text(user_query):
 @app.route("/fics")
 def fics_search():
     user_query = request.args.get("Name")
+    #tests
+    print(">>> User query:", user_query)
+    print(">>> Current precomputed keys:", list(precomputed.keys()))
     if not user_query:
         return ("Please input a query :)"), 400
 
@@ -418,6 +359,43 @@ def fics_search():
         "ourentries": ourentries_dicts,
     })
 
+def store_feedback_in_db(data):
+    feedback_list = data.get("feedback", [])
+    for feedback_item in feedback_list:
+        doc_index = feedback_item.get("doc_index")
+        feedback_value = feedback_item.get("feedback")
+
+        mysql_engine.execute_query(
+            "INSERT INTO feedback (doc_index, feedback_value) VALUES (:doc_index, :feedback_value);",
+            {
+                "doc_index": doc_index,
+                "feedback_value": feedback_value
+            }
+        )
+    return 1
+    
+#the /submit_feedback route
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    data = request.get_json()
+
+    feedback_id = store_feedback_in_db(data)
+
+    session['feedback'] = data.get("feedback", [])
+
+    return jsonify({
+        "status": "success",
+        "stored_feedback": session['feedback'],
+        "feedback_id": feedback_id
+    })
+
+#tests
+try:
+    print(">>> Running initialize_precomputed...")
+    initialize_precomputed()
+    print(">>> Done with initialize_precomputed.")
+except Exception as e:
+    print(">>> ERROR initializing precomputed:", e)
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
