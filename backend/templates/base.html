@@ -13,20 +13,10 @@
         <div style="position: relative; display: inline-block;">
           <img src="{{ url_for('static', filename='images/title_gif.gif') }}" alt="QuillQuest Logo"
             style="position: relative; z-index: 1; width: 400px; height: auto;" />
-          <!-- <img src="{{ url_for('static', filename='images/project.png') }}" alt="QuillQuest Logo"
-            style="position: relative; z-index: 1; width: 500px; height: auto;" /> -->
-          <!-- <h1 style="color:rgb(53, 34, 165); font-family: 'fantasy', cursive; position: relative; z-index: 1;">
-            QuillQuest
-          </h1> -->
-          <!-- <img src="{{ url_for('static', filename='images/QK5b.gif') }}"
-            style="position: absolute; top: 0; left: 0; width: 100px; height: auto; z-index: 0; opacity: 0.6;" /> -->
+
         </div>
       </div>
-      <!-- <div class="input-box" onclick="sendFocus()">
-        <img src="{{ url_for('static', filename='images/search2.png') }}" />
-        <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val"
-          onkeyup="filterText()" style="font-family: 'Courier New', monospace; background-color:white;">
-      </div> -->
+
       <div class="input-box">
         <img src="{{ url_for('static', filename='images/search2.png') }}" />
         <!-- Remove onkeyup from the input -->
@@ -35,6 +25,7 @@
         <button style="font-family: 'Courier New', monospace; background-color: grey; color: white;" onclick="filterText()">Search</button>
       </div>
     </div>
+
     <div id="answer-box">
 
     </div>
