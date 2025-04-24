@@ -101,16 +101,55 @@ class Entry:
         self.link = link
         if fandom == ('"Harry Potter"') or fandom == ('Harry Potter'):
             self.image = "/static/images/dumbly.jpg"
-        elif fandom == ('"Kardashians"'):
+        elif fandom == ('"Kardashians"') or fandom == ('Kardashians'):
             self.image ="/static/images/KIM.jpg"
         elif fandom == ('"Merlin"'):
             self.image ="/static/images/Merlin.jpg"
         elif fandom == ('"One Direction"'):
             self.image = "/static/images/OneD.jpeg"
-        elif fandom == ('"Hunger Games"'):
+        elif fandom == ('"Hunger Games"') or fandom == ('Hunger Games'):
             self.image = "/static/images/HG.jpeg"
-        elif fandom == ('"The Princess Diaries"'):
+        elif fandom == ('"The Princess Diaries"') or fandom == ('Princess Diaries'):
             self.image = "/static/images/PD.jpg"
+        #DC
+        elif fandom == ('DC Superheroes'):
+            self.image = "/static/images/DC.jpeg"
+        #Sherlock
+        elif fandom == ('Sherlock'):
+            self.image = "/static/images/Sherlock.jpeg"
+        #MCU
+        elif fandom == ('Marvel'):
+            self.image = "/static/images/MCU.jpeg"
+        #Supernatural
+        elif fandom == ('Supernatural'):
+            self.image = "/static/images/Supernatural.jpeg"
+        #My hero academia
+        elif fandom == ('My Hero Academia'):
+            self.image = "/static/images/MHA.jpeg"
+        #Star Wars
+        elif fandom == ('Star Wars'):
+            self.image = "/static/images/SW.jpeg"
+        #Doctor Who
+        elif fandom == ('Doctor Who'):
+            self.image = "/static/images/DW.jpeg"
+        #Naruto
+        elif fandom == ('Naruto'):
+            self.image = "/static/images/Naruto.jpeg"
+        #Star Trek
+        elif fandom == ('Star Trek'):
+            self.image = "/static/images/StarTrek.jpeg"
+        #Teen Wolf
+        elif fandom == ('Teen Wolf'):
+            self.image = "/static/images/TeenWolf.jpeg"
+        #How to train your dragon
+        elif fandom == ('How to Train Your Dragon'):
+            self.image = "/static/images/HTTYD.jpeg"
+        #greek myths
+        elif fandom == ('Greek Mythology'):
+            self.image = "/static/images/GM.png"
+        #Pirates of the carribean
+        elif fandom == ('Pirates of the Caribbean'):
+            self.image = "/static/images/POTC.jpeg"
         else:
             self.image = "/static/images/fandom.jpeg"
 
