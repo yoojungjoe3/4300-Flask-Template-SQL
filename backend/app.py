@@ -178,136 +178,6 @@ class Entry:
     def __repr__(self):
         return f"Entry(Name: {self.name}, Ships: {self.ship}, Fandoms: {self.fandom}, Ratings: {self.rating}, Abstracts: {self.abstract}, Links: {self.link}, Image: {self.image})"
 
-def vector_search(user_query):
-    """
-    Compute combined similarity scores for the query against both fandoms and ships.
-    Also prints the top two fanfic titles.
-    Returns a dictionary mapping record number (starting at 1) to the combined similarity score.
-    """
-    # Clean and prepare the query
-    words = clean_text(user_query).split()
-
-    query = "SELECT Name, Fandom, Ships, Rating, Link, Review, Abstract FROM fics;"
-    row = list(mysql_engine.query_selector(query))
-
-    names = [r[0] for r in row]
-    fandoms = [r[1] for r in row]
-    ships = [r[2] for r in row]
-    ratings = [r[3] for r in row]
-    links = [r[4] for r in row]
-    reviews = [r[5] for r in row]
-    abstracts = [r[6] for r in row]
-
-    #vectorizer = TfidfVectorizer()
-    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3,5), stop_words='english')
-
-    # Create a list to store the similarity scores for the query words
-    similarity_scores_fandoms = []
-    similarity_scores_ships = []
-    similarity_scores_abstracts = []
-    similarity_scores_reviews = []
-
-    # Iterate through each word in the query and compare with fandoms and ships
-    for word in words:
-        # fandoms 
-        join_fandom_query = fandoms + [word]
-        tfidf_matrix_fandoms = vectorizer.fit_transform(join_fandom_query) # PROBLEM LINE!!!
-        query_vector_fandoms = tfidf_matrix_fandoms[-1]
-        candidate_vectors_fandoms = tfidf_matrix_fandoms[:-1]
-        similarities_fandoms = cosine_similarity(query_vector_fandoms, candidate_vectors_fandoms).flatten()
-        similarity_scores_fandoms.append(similarities_fandoms)
-
-        # ships 
-        join_ship_query = ships + [word]
-        tfidf_matrix_ships = vectorizer.fit_transform(join_ship_query)
-        query_vector_ships = tfidf_matrix_ships[-1]
-        candidate_vectors_ships = tfidf_matrix_ships[:-1]
-        similarities_ships = cosine_similarity(query_vector_ships, candidate_vectors_ships).flatten()
-        similarity_scores_ships.append(similarities_ships)
-
-        # abstract
-        join_abstract_query = abstracts + [word]
-        tfidf_matrix_abstracts = vectorizer.fit_transform(join_abstract_query)
-        query_vector_abstracts = tfidf_matrix_abstracts[-1]
-        candidate_vectors_abstracts = tfidf_matrix_abstracts[:-1]
-        similarities_abstracts = cosine_similarity(query_vector_abstracts, candidate_vectors_abstracts).flatten()
-        similarity_scores_abstracts.append(similarities_abstracts)
-
-        # reviews
-        join_reviews_query = reviews + [word]
-        tfidf_matrix_reviews = vectorizer.fit_transform(join_reviews_query)
-        query_vector_reviews = tfidf_matrix_reviews[-1]
-        candidate_vectors_reviews = tfidf_matrix_reviews[:-1]
-        similarities_reviews = cosine_similarity(query_vector_reviews, candidate_vectors_reviews).flatten()
-        similarity_scores_reviews.append(similarities_reviews)
-
-    # Combine the similarity scores for each query word (sum of all word similarities)
-    combined_fandom_similarities = np.sum(np.array(similarity_scores_fandoms), axis=0)
-    combined_ship_similarities = np.sum(np.array(similarity_scores_ships), axis=0)
-    combined_abstract_similarities = np.sum(np.array(similarity_scores_abstracts), axis=0)
-    combined_review_similarities = np.sum(np.array(similarity_scores_reviews), axis=0)
-
-    # Combine fandom and ship similarities
-    combined_similarities = combined_fandom_similarities + combined_ship_similarities + combined_abstract_similarities + combined_review_similarities
-    total_sim_dict = {i + 1: total for i, total in enumerate(combined_similarities)}
-    # print(total_sim_dict)
-
-    # Sort keys (record indices) by similarity score (highest first)
-    sorted_keys = sorted(total_sim_dict, key=total_sim_dict.get, reverse=True)
-
-    ourentries =[]
-
-    nonzero_values = [v for v in total_sim_dict.values() if v != 0]
-    if nonzero_values:
-        average = sum(nonzero_values) / len(nonzero_values)
-    else:
-        average = 0
-
-    for x in sorted_keys: 
-        if total_sim_dict[x] > average * 2: 
-            final_name = names[x-1]
-            final_ship = ships[x-1]
-            final_fandom = fandoms[x-1]
-            final_rating = ratings[x-1]
-            final_abstract = abstracts[x-1]
-            final_link = links[x-1]
-
-
-            e = Entry(final_name, final_ship, final_fandom, final_rating, final_abstract, final_link)
-            ourentries.append(e)
-     
-    return ourentries
-
-
-def rocchio_adjust(pre, query, ratings, rel_thr=1,
-                   a=1.0, b=0.75, gam=0.25):
-    """
-    pre  : one precomputed dict  (vectorizer / svd / matrix)
-    query: raw user string
-    ratings: list[int] – same order as pre['matrix']
-    rel_thr: rating ≥ rel_thr  => relevant
-             rating < 0        => non-relevant
-    returns a length-normalised vector for cosine similarity.
-    """
-    # 1) plain query vector in the reduced space
-    q = pre['svd'].transform(pre['vectorizer'].transform([query]))[0]
-
-    M = pre['matrix']                       # (n_docs, k)
-    rel_idx = [i for i, r in enumerate(ratings) if r >= rel_thr]
-    non_idx = [i for i, r in enumerate(ratings) if r < 0]
-
-    if rel_idx:
-        rel_centroid = M[rel_idx].mean(axis=0)
-    else:
-        rel_centroid = 0
-    if non_idx:
-        non_centroid = M[non_idx].mean(axis=0)
-    else:
-        non_centroid = 0
-
-    q_new = a * q + b * rel_centroid - gam * non_centroid
-    return normalize(q_new.reshape(1, -1))[0]
-
 def compute_precomputed_similarity(precomputed_obj, query):
     """
     Given a precomputed dictionary (with vectorizer, svd, and matrix)
@@ -329,26 +199,12 @@ def SVD_vector_search(user_query, fandom_dropdown):
     """
     cleaned_query = clean_text(user_query)
 
-    # # Compute similarities for each field using the precomputed objects:
-    # sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
-    # sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
-    # sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
-    # sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
-    # sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
-
-    # NEW: compute Rocchio-moved query for each field
-    q_names     = rocchio_adjust(precomputed['names'],     cleaned_query, precomputed['ratings'])
-    q_fandoms   = rocchio_adjust(precomputed['fandoms'],   cleaned_query, precomputed['ratings'])
-    q_ships     = rocchio_adjust(precomputed['ships'],     cleaned_query, precomputed['ratings'])
-    q_abstracts = rocchio_adjust(precomputed['abstracts'], cleaned_query, precomputed['ratings'])
-    q_reviews   = rocchio_adjust(precomputed['reviews'],   cleaned_query, precomputed['ratings'])
-
-    # cosine against whole field once (matrix already in precomputed)
-    sim_names     = (precomputed['names']['matrix']     @ q_names)
-    sim_fandoms   = (precomputed['fandoms']['matrix']   @ q_fandoms)
-    sim_ships     = (precomputed['ships']['matrix']     @ q_ships)
-    sim_abstracts = (precomputed['abstracts']['matrix'] @ q_abstracts)
-    sim_reviews   = (precomputed['reviews']['matrix']   @ q_reviews)
+    # Compute similarities for each field using the precomputed objects:
+    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
+    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
+    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
 
     # Set weights for each field
     weight_names     = 3.0
