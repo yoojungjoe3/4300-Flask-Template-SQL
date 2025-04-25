@@ -126,7 +126,7 @@
 
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
-      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value, Fandom_Dropdown: document.getElementById("fandom_dropdown").value }).toString())
+      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value, Fandom_Dropdown: document.getElementById("fandom_dropdown").value || ""}).toString())
         // .then(response => {
         .then((response => response.json()))
         //this statement gets printed

@@ -374,7 +374,7 @@ def compute_precomputed_similarity(precomputed_obj, query):
     query_reduced = svd.transform(query_tfidf)
     return cosine_similarity(query_reduced, matrix).flatten()
 
-def SVD_vector_search(user_query):
+def SVD_vector_search(user_query, fandom_dropdown):
     """
     Compute combined similarity scores using precomputed TF-IDF + SVD representations.
     Applies field weights: Name (3.0), Fandom (2.0), Ship (1.5), Abstract (1.0), Review (1.0).
@@ -424,17 +424,16 @@ def SVD_vector_search(user_query):
 
             fandom = precomputed['fandoms_raw'][i]
 
-
-
-            entry = Entry(
-                precomputed['names_raw'][i],
-                precomputed['ships_raw'][i],
-                precomputed['fandoms_raw'][i],
-                precomputed['ratings'][i],
-                precomputed['abstracts_raw'][i],
-                precomputed['links'][i]
-            )
-            ourentries.append(entry)
+            if fandom == fandom_dropdown or fandom_dropdown == "":
+                entry = Entry(
+                    precomputed['names_raw'][i],
+                    precomputed['ships_raw'][i],
+                    precomputed['fandoms_raw'][i],
+                    precomputed['ratings'][i],
+                    precomputed['abstracts_raw'][i],
+                    precomputed['links'][i]
+                    )
+                ourentries.append(entry)
     return ourentries
 
  
@@ -456,7 +455,7 @@ def fics_search():
         return ("Please input a query :)"), 400
 
 
-    ourentries = SVD_vector_search(user_query)
+    ourentries = SVD_vector_search(user_query, fandom_dropdown)
     ourentries_dicts = [entry.to_dict() for entry in ourentries]
 
     return jsonify({
