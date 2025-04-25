@@ -7,13 +7,24 @@
   rel="stylesheet">
 
 
+  <!--Start the CSS Portions for bits that wont work inline-->
 <head>
   <style>
     body{
       background-color: #758e89;
       cursor: url("{{ url_for('static', filename='images/quill.png') }}"), auto;}
+    .scroll-box{
+      border: 1px solid #ccc; 
+      border-radius: 10px; 
+      padding: 16px; 
+      margin: 20px auto;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif; 
+      width: 100%;
+    }
   </style>
 </head>
+<!--End CSS Portion-->
 
 
 <body>
@@ -103,7 +114,7 @@
       // const image = imageMap[fandom];
       // console.log(image);
       return `
-        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin: 20px auto; background-color: #f9f9f9; font-family: Arial, sans-serif; width: 100%;">
+        <div class="scroll-box">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0;">${name}</h2>
             <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
