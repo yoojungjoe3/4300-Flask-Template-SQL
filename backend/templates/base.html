@@ -13,7 +13,6 @@
         <div style="position: relative; display: inline-block;">
           <img src="{{ url_for('static', filename='images/title_gif.gif') }}" alt="QuillQuest Logo"
             style="position: relative; z-index: 1; width: 400px; height: auto;" />
-
         </div>
       </div>
 
@@ -25,12 +24,14 @@
         <button style="font-family: 'Courier New', monospace; background-color: grey; color: white;" onclick="filterText()">Search</button>
       </div>
     </div>
+
     <div>
       <!--Drop down list of fandoms-->
-      <label for="fandom_dropdown">Pick a Fandom:</label>
+      <label for="fandom_dropdown"></label>
 
       <select name="fandom_dropdown" id="fandom_dropdown" size="4">
 
+        <option value="" disabled selected>Select a fandom</option>
         <option value='Harry Potter'>Harry Potter</option>
         <option value='Marvel'>Marvel</option>
         <option value='"Kardashians"'>Kardashians</option>
