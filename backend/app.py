@@ -420,6 +420,12 @@ def SVD_vector_search(user_query):
     for idx in sorted_keys:
         if total_sim_dict[idx] > avg and len(ourentries) < 10:
             i = idx - 1
+
+
+            fandom = precomputed['fandoms_raw'][i]
+
+
+
             entry = Entry(
                 precomputed['names_raw'][i],
                 precomputed['ships_raw'][i],
@@ -445,6 +451,7 @@ def clean_text(user_query):
 @app.route("/fics")
 def fics_search():
     user_query = request.args.get("Name")
+    fandom_dropdown = request.args.get("Fandom_Dropdown")
     if not user_query:
         return ("Please input a query :)"), 400
 
