@@ -223,13 +223,13 @@
           // toggle visual + flag
           if (liked) {
             btn.dataset.liked = 'false';
-            btn.style.backgroundColor = '';
-            btn.style.color = '';
+            btn.style.backgroundColor = '#B0D0FE'; // light blue
+            btn.style.color = '#000000';           // black text
             btn.textContent = '👍 Like';
           } else {
             btn.dataset.liked = 'true';
-            btn.style.backgroundColor = '';
-            btn.style.color = '';
+            btn.style.backgroundColor = '#FFDDE1';  // pink
+            btn.style.color = '#000000';            // black text
             btn.textContent = '👍 Liked';
           }
         })
