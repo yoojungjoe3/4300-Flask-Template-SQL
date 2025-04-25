@@ -22,6 +22,9 @@
       padding-bottom: 30px;
       padding-left: 70px;
       padding-right: 60px;
+      box-sizing: border-box;
+
+      font-family: 'Courier New', monospace;
     }
   </style>
 </head>
@@ -118,19 +121,19 @@
         <div class="scroll-box">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0;">${name}</h2>
-            <span style="border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
+            <span style="font-family: 'Courier New', monospace; border: 2px solid #444; background-color: #eee; padding: 4px 8px; border-radius: 6px; font-size: 14px;">Rating: ${rating}</span>
           </div>
           <p> ${fandom} | ${ship} </p>
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center;font-family: 'Courier New', monospace;">
             <img src= "${image}"" style="max-width: 100px;" />
-            <span style="font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
+            <span style="font-family: 'Courier New', monospace; font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
           </div>
-        <div style="margin-top: auto; align-self: flex-start; padding-top: 10px;">
-        <form action="/like" method="POST" style="display:inline;">
+        <div style="margin-top: auto; align-self: flex-start; padding-top: 10px;font-family: 'Courier New', monospace;">
+        <form action="/like" method="POST" style="display:inline;font-family: 'Courier New', monospace;">
           <input type="hidden" name="name" value="${name}">
           <button type="submit">👍 Like</button>
         </form>
-        <form action="/dislike" method="POST" style="display:inline;">
+        <form action="/dislike" method="POST" style="display:inline;font-family: 'Courier New', monospace;">
           <input type="hidden" name="name" value="${name}">
           <button type="submit">👎 Dislike</button>
         </form>
