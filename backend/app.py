@@ -422,26 +422,26 @@ def SVD_vector_search(user_query, fandom_dropdown):
     """
     cleaned_query = clean_text(user_query)
 
-    # # Compute similarities for each field using the precomputed objects:
-    # sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
-    # sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
-    # sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
-    # sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
-    # sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
+    # Compute similarities for each field using the precomputed objects:
+    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
+    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
+    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
+    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
+    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
 
-    # NEW: compute Rocchio-moved query for each field
-    q_names     = rocchio_adjust(precomputed['names'],     cleaned_query, precomputed['ratings'])
-    q_fandoms   = rocchio_adjust(precomputed['fandoms'],   cleaned_query, precomputed['ratings'])
-    q_ships     = rocchio_adjust(precomputed['ships'],     cleaned_query, precomputed['ratings'])
-    q_abstracts = rocchio_adjust(precomputed['abstracts'], cleaned_query, precomputed['ratings'])
-    q_reviews   = rocchio_adjust(precomputed['reviews'],   cleaned_query, precomputed['ratings'])
+    # # NEW: compute Rocchio-moved query for each field
+    # q_names     = rocchio_adjust(precomputed['names'],     cleaned_query, precomputed['ratings'])
+    # q_fandoms   = rocchio_adjust(precomputed['fandoms'],   cleaned_query, precomputed['ratings'])
+    # q_ships     = rocchio_adjust(precomputed['ships'],     cleaned_query, precomputed['ratings'])
+    # q_abstracts = rocchio_adjust(precomputed['abstracts'], cleaned_query, precomputed['ratings'])
+    # q_reviews   = rocchio_adjust(precomputed['reviews'],   cleaned_query, precomputed['ratings'])
 
-    # cosine against whole field once (matrix already in precomputed)
-    sim_names     = (precomputed['names']['matrix']     @ q_names)
-    sim_fandoms   = (precomputed['fandoms']['matrix']   @ q_fandoms)
-    sim_ships     = (precomputed['ships']['matrix']     @ q_ships)
-    sim_abstracts = (precomputed['abstracts']['matrix'] @ q_abstracts)
-    sim_reviews   = (precomputed['reviews']['matrix']   @ q_reviews)
+    # # cosine against whole field once (matrix already in precomputed)
+    # sim_names     = (precomputed['names']['matrix']     @ q_names)
+    # sim_fandoms   = (precomputed['fandoms']['matrix']   @ q_fandoms)
+    # sim_ships     = (precomputed['ships']['matrix']     @ q_ships)
+    # sim_abstracts = (precomputed['abstracts']['matrix'] @ q_abstracts)
+    # sim_reviews   = (precomputed['reviews']['matrix']   @ q_reviews)
 
     # Set weights for each field
     weight_names     = 3.0
