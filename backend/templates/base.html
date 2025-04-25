@@ -11,9 +11,10 @@
 <head>
   <style>
     body{
-      background-color: #758e89;
-      cursor: url("{{ url_for('static', filename='images/quill.png') }}"), auto;}
+      background-color: #758e89
+    }
     .scroll-box{
+      cursor: url("{{ url_for('static', filename='images/quill.png') }}"), auto;
       background-image: url("{{ url_for('static', filename='images/newScroll.png') }}");
       background-size: cover;
       background-position: center top;
@@ -23,12 +24,18 @@
       padding-left: 70px;
       padding-right: 60px;
       box-sizing: border-box;
-
       width: 600px;                            /* fixed width */
       height: 300px;                           /* fixed height */
       margin: 50px auto;
-
       font-family: 'Courier New', monospace;
+    }
+
+    input, button, select, textarea {
+      cursor: text;
+    }
+
+    button:hover, select:hover {
+      cursor: pointer;
     }
   </style>
 </head>
