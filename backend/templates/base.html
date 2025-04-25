@@ -135,8 +135,8 @@
           </div>
         <div style="margin-top: auto; align-self: flex-start; padding-top: 10px;font-family: 'Courier New', monospace;">
         <div style="margin-top:8px;">
-            <button onclick="toggleLike(this,'${name.replaceAll("'", "\\'")}')" style="margin-right:6px;">👍 Like</button>
-            <button onclick="dislikeAndHide(this,'${name.replaceAll("'", "\\'")}')">👎 Dislike</button>
+            <button onclick="toggleLike(this,'${name.replaceAll("'", "\\'")}')" style="margin-right:6px; background-color:#264653;">👍 Like</button>
+            <button onclick="dislikeAndHide(this,'${name.replaceAll("'", "\\'")}')" style="background-color:#264653;" >👎 Dislike</button>
         </div>
       </div>
     </div>`;
@@ -228,8 +228,8 @@
             btn.textContent = '👍 Like';
           } else {
             btn.dataset.liked = 'true';
-            btn.style.backgroundColor = '#444';
-            btn.style.color = '#fff';
+            btn.style.backgroundColor = '#FFDDE1';
+            btn.style.color = '#0000';
             btn.textContent = '👍 Liked';
           }
         })
