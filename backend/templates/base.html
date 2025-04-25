@@ -7,34 +7,45 @@
   rel="stylesheet">
 
 
-  <!--Start the CSS Portions for bits that wont work inline-->
+<!--Start the CSS Portions for bits that wont work inline-->
+
 <head>
   <style>
-    body{
+    body {
       background-color: #758e89;
-      cursor: url("{{ url_for('static', filename='images/quill.png') }}"), auto;
+      cursor: url("{{ url_for('static', filename='images/quill.png') }}"),
+      auto;
     }
 
-    #answer-box, #fandom_dropdown, input, button, select, textarea {
+    #answer-box,
+    #fandom_dropdown,
+    input,
+    button,
+    select,
+    textarea {
       cursor: text;
     }
 
-    button:hover, select:hover {
+    button:hover,
+    select:hover {
       cursor: pointer;
     }
 
-    .scroll-box{
+    .scroll-box {
       background-image: url("{{ url_for('static', filename='images/newScroll.png') }}");
       background-size: cover;
       background-position: center top;
       background-repeat: no-repeat;
-      padding-top: 90px;
-      padding-bottom: 30px;
-      padding-left: 70px;
+      padding-top: 140px;
+      padding-bottom: 40px;
+      padding-left: 100px;
       padding-right: 60px;
       box-sizing: border-box;
-      width: 600px;                            /* fixed width */
-      height: 300px;                           /* fixed height */
+
+      width: 775px;
+      height: 550px;
+      /* fixed width */
+      /* fixed height */
       margin: 50px auto;
       font-family: 'Courier New', monospace;
     }
@@ -59,17 +70,21 @@
         <div class="input-box" style="flex: 1; background-color: white; padding: 20px; border-radius: 10px;">
           <img src="{{ url_for('static', filename='images/search2.png') }}" />
           <!-- Remove onkeyup from the input -->
-          <input name="Name"  placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val" onkeyup="if(event.key==='Enter'){filterText();}"  style="font-family: 'Courier New', monospace; background-color: white;">
+          <input name="Name" placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val"
+            onkeyup="if(event.key==='Enter'){filterText();}"
+            style="font-family: 'Courier New', monospace; background-color: white;">
           <!-- Add a search button -->
-          <button style="font-family: 'Courier New', monospace; background-color: #FD8E7F; color: black;" onclick="filterText()">Search</button>
+          <button
+            style="font-family: 'Courier New', monospace; background-color: #264653; color: white;border-radius: 8px;"
+            onclick="filterText()">Search</button>
         </div>
 
         <div>
           <!--Drop down list of fandoms-->
           <label for="fandom_dropdown"></label>
-    
+
           <select name="fandom_dropdown" id="fandom_dropdown" size="3"
-            style="font-family: 'Courier New', monospace; background-color: #FD8E7F; color: black; padding: 10px; border-radius: 10px">
+            style="font-family: 'Courier New', monospace; background-color: #264653; color: white; padding: 10px; border-radius: 10px">
 
             <option value="" disabled selected>Select a fandom</option>
             <option value='DC Superheroes'>DC Universe</option>
@@ -97,7 +112,7 @@
       <!-- End Wrap Search Box and Drop Down in Flex Container-->
     </div>
 
-    
+
 
     <div id="answer-box">
     </div>
@@ -139,7 +154,7 @@
 
 
       // Fetch JSON data from the /fics endpoint, sending the "Name" parameter
-      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value, Fandom_Dropdown: document.getElementById("fandom_dropdown").value || ""}).toString())
+      fetch("/fics?" + new URLSearchParams({ Name: document.getElementById("filter-text-val").value, Fandom_Dropdown: document.getElementById("fandom_dropdown").value || "" }).toString())
         .then((response => response.json()))
         .then(data => {
           console.log("end fetched");
