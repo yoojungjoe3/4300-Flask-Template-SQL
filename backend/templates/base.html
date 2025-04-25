@@ -134,9 +134,9 @@
             <span style="font-family: 'Courier New', monospace; font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
           </div>
         <div style="margin-top: auto; align-self: flex-start; padding-top: 10px;font-family: 'Courier New', monospace;">
-        <div style="margin-top:8px;">
-            <button onclick="toggleLike(this,'${name.replaceAll("'", "\\'")}')" style="margin-right:6px; background-color:'#ffffff';">👍 Like</button>
-            <button onclick="dislikeAndHide(this,'${name.replaceAll("'", "\\'")}')" style="background-color:'#ffffff';" >👎 Dislike</button>
+        <div style="margin-top:8px;font-family: 'Courier New', monospace;">
+            <button onclick="toggleLike(this,'${name.replaceAll("'", "\\'")}')" style="margin-right:6px; background-color:'#ffffff';border-radius: 6px;">👍 Like</button>
+            <button onclick="dislikeAndHide(this,'${name.replaceAll("'", "\\'")}')" style="background-color:'#ffffff';border-radius: 6px;" >👎 Dislike</button>
         </div>
       </div>
     </div>`;
@@ -226,11 +226,13 @@
             btn.style.backgroundColor = '#ffffff';
             btn.style.color = '#000000';           // black text
             btn.textContent = '👍 Like';
+            btn.style.borderRadius = '6px';
           } else {
             btn.dataset.liked = 'true';
             btn.style.backgroundColor = '#FFDDE1';  // pink
             btn.style.color = '#000000';            // black text
             btn.textContent = '👍 Liked';
+            btn.style.borderRadius = '6px';
           }
         })
         .catch(console.error);
