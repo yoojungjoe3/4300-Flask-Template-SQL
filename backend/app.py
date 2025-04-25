@@ -462,6 +462,25 @@ def fics_search():
         "ourentries": ourentries_dicts,
     })
 
+@app.route("/likes", methods=["POST"])
+def like_fic(): 
+    user_query = request.form.get("Name")
+    if not user_query:
+        return ("Please input a query :)"), 400 
+
+    update_rating = "UPDATE fics SET Rating = Rating + 2 WHERE Name = %s;"
+    mysql_engine.query_modifier(update_rating, (user_query,))
+    return render_template('base.html', Name="sample html")
+
+@app.route("/dislikes", methods=["POST"])
+def dislike_fic(): 
+    user_query = request.form.get("Name")
+    if not user_query:
+        return ("Please input a query :)"), 400 
+
+    update_rating = "UPDATE fics SET Rating = Rating - 2 WHERE Name = %s;"
+    mysql_engine.query_modifier(update_rating, (user_query,))
+    return render_template('base.html', Name="sample html")
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)

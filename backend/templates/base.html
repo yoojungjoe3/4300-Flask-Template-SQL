@@ -94,7 +94,17 @@
             <img src= "${image}"" style="max-width: 100px;" />
             <span style="font-size: 14px; padding: 4px 8px;">${abstract}<br><a href=${link}>Press Here to Start Reading!</a></span>
           </div>
-        </div>`;
+        <div style="margin-top: auto; align-self: flex-start; padding-top: 10px;">
+        <form action="/like" method="POST" style="display:inline;">
+          <input type="hidden" name="name" value="${name}">
+          <button type="submit">👍 Like</button>
+        </form>
+        <form action="/dislike" method="POST" style="display:inline;">
+          <input type="hidden" name="name" value="${name}">
+          <button type="submit">👎 Dislike</button>
+        </form>
+      </div>
+    </div>`;
     }
     function sendFocus() {
       document.getElementById('filter-text-val').focus()
