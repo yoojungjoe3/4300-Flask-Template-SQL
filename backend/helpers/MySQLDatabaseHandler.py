@@ -37,19 +37,60 @@ class MySQLDatabaseHandler(object):
         data = conn.execute(query)
         return data
     
+    def query_modifier(self, query, params=None):
+        connection = self.lease_connection()
+        trans = connection.begin()
+        try:
+            if params: 
+                connection.execute(db.text(query), params)
+            else:
+                connection.execute(db.text(query))
+            trans.commit()
+        except Exception as e:
+            trans.rollback()
+            raise e
+        finally:
+            connection.close()
+
+    def increment_rating(self, name: str) -> int:
+        with self.engine.begin() as conn:
+            conn.execute(
+                text("UPDATE fics SET Rating = Rating + 1 "
+                    "WHERE Name = :name"),
+                {"name": name},
+            )
+            new_rating = conn.scalar(
+                text("SELECT Rating FROM fics WHERE Name = :name"),
+                {"name": name},
+            )
+        return new_rating
+
+    def decrement_rating(self, name: str) -> None:
+        with self.engine.begin() as conn:
+            conn.execute(
+                text("UPDATE fics SET Rating = Rating - 1 "
+                    "WHERE Name = :name"),
+                {"name": name},
+            )
+            new_rating = conn.scalar(
+                text("SELECT Rating FROM fics WHERE Name = :name"),
+                {"name": name},
+            )
+        return new_rating
+    
+    def get_rating(self, name: str) -> int:
+        """Return current Rating for a fic."""
+        with self.engine.connect() as conn:
+            return conn.scalar(
+                text("SELECT Rating FROM fics WHERE Name = :name"),
+                {"name": name},
+            )
+    
     def execute_query(self, query, params=None):
         with self.engine.connect() as connection:
             connection.execute(text(query), params)
 
     def load_file_into_db(self,file_path = None):
-        # if MySQLDatabaseHandler.IS_DOCKER:
-        #     return
-        # if file_path is None:
-        #     file_path = os.path.join(os.environ['ROOT_PATH'],'init.sql')
-        # sql_file = open(file_path,"r")
-        # sql_file_data = list(filter(lambda x:x != '',sql_file.read().split(";\n")))
-        # self.query_executor(sql_file_data)
-        # sql_file.close()
         if MySQLDatabaseHandler.IS_DOCKER:
             return
         if file_path is None:

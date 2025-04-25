@@ -2,12 +2,13 @@ import json
 import os
 import re
 import numpy as np
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import normalize
 
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 # import sqlalchemy as db 
@@ -86,6 +87,16 @@ def initialize_precomputed():
     precomputed['links']         = links
     precomputed['reviews_raw']   = reviews
     precomputed['abstracts_raw'] = abstracts
+
+    ratings_raw = [r[3] for r in rows]
+
+    def safe_num(x):
+        try:
+            return float(x)          
+        except (TypeError, ValueError):
+            return 0                 
+
+    precomputed['ratings'] = [safe_num(x) for x in ratings_raw]
 
 # Precompute on startup
 initialize_precomputed()
@@ -361,6 +372,35 @@ def SVD_vector_search0(user_query):
 
     return ourentries
 
+def rocchio_adjust(pre, query, ratings, rel_thr=1,
+                   a=1.0, b=0.75, gam=0.25):
+    """
+    pre  : one precomputed dict  (vectorizer / svd / matrix)
+    query: raw user string
+    ratings: list[int] – same order as pre['matrix']
+    rel_thr: rating ≥ rel_thr  => relevant
+             rating < 0        => non-relevant
+    returns a length-normalised vector for cosine similarity.
+    """
+    # 1) plain query vector in the reduced space
+    q = pre['svd'].transform(pre['vectorizer'].transform([query]))[0]
+
+    M = pre['matrix']                       # (n_docs, k)
+    rel_idx = [i for i, r in enumerate(ratings) if r >= rel_thr]
+    non_idx = [i for i, r in enumerate(ratings) if r < 0]
+
+    if rel_idx:
+        rel_centroid = M[rel_idx].mean(axis=0)
+    else:
+        rel_centroid = 0
+    if non_idx:
+        non_centroid = M[non_idx].mean(axis=0)
+    else:
+        non_centroid = 0
+
+    q_new = a * q + b * rel_centroid - gam * non_centroid
+    return normalize(q_new.reshape(1, -1))[0]
+
 def compute_precomputed_similarity(precomputed_obj, query):
     """
     Given a precomputed dictionary (with vectorizer, svd, and matrix)
@@ -382,12 +422,26 @@ def SVD_vector_search(user_query, fandom_dropdown):
     """
     cleaned_query = clean_text(user_query)
 
-    # Compute similarities for each field using the precomputed objects:
-    sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
-    sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
-    sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
-    sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
-    sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
+    # # Compute similarities for each field using the precomputed objects:
+    # sim_names     = compute_precomputed_similarity(precomputed['names'], cleaned_query)
+    # sim_fandoms   = compute_precomputed_similarity(precomputed['fandoms'], cleaned_query)
+    # sim_ships     = compute_precomputed_similarity(precomputed['ships'], cleaned_query)
+    # sim_abstracts = compute_precomputed_similarity(precomputed['abstracts'], cleaned_query)
+    # sim_reviews   = compute_precomputed_similarity(precomputed['reviews'], cleaned_query)
+
+    # NEW: compute Rocchio-moved query for each field
+    q_names     = rocchio_adjust(precomputed['names'],     cleaned_query, precomputed['ratings'])
+    q_fandoms   = rocchio_adjust(precomputed['fandoms'],   cleaned_query, precomputed['ratings'])
+    q_ships     = rocchio_adjust(precomputed['ships'],     cleaned_query, precomputed['ratings'])
+    q_abstracts = rocchio_adjust(precomputed['abstracts'], cleaned_query, precomputed['ratings'])
+    q_reviews   = rocchio_adjust(precomputed['reviews'],   cleaned_query, precomputed['ratings'])
+
+    # cosine against whole field once (matrix already in precomputed)
+    sim_names     = (precomputed['names']['matrix']     @ q_names)
+    sim_fandoms   = (precomputed['fandoms']['matrix']   @ q_fandoms)
+    sim_ships     = (precomputed['ships']['matrix']     @ q_ships)
+    sim_abstracts = (precomputed['abstracts']['matrix'] @ q_abstracts)
+    sim_reviews   = (precomputed['reviews']['matrix']   @ q_reviews)
 
     # Set weights for each field
     weight_names     = 3.0
@@ -456,31 +510,28 @@ def fics_search():
 
 
     ourentries = SVD_vector_search(user_query, fandom_dropdown)
+    for e in ourentries:
+        e.rating = mysql_engine.get_rating(e.name)
     ourentries_dicts = [entry.to_dict() for entry in ourentries]
 
     return jsonify({
         "ourentries": ourentries_dicts,
     })
 
-@app.route("/likes", methods=["POST"])
-def like_fic(): 
-    user_query = request.form.get("Name")
-    if not user_query:
-        return ("Please input a query :)"), 400 
+@app.route('/like', methods=['POST'])
+def like():
+    data = request.get_json()
+    name = data.get('name')
+    # increment in database, return new rating
+    new_rating = mysql_engine.increment_rating(name)  
+    return jsonify({'rating': new_rating})
 
-    update_rating = "UPDATE fics SET Rating = Rating + 2 WHERE Name = %s;"
-    mysql_engine.query_modifier(update_rating, (user_query,))
-    return render_template('base.html', Name="sample html")
-
-@app.route("/dislikes", methods=["POST"])
-def dislike_fic(): 
-    user_query = request.form.get("Name")
-    if not user_query:
-        return ("Please input a query :)"), 400 
-
-    update_rating = "UPDATE fics SET Rating = Rating - 2 WHERE Name = %s;"
-    mysql_engine.query_modifier(update_rating, (user_query,))
-    return render_template('base.html', Name="sample html")
+@app.route('/dislike', methods=['POST'])
+def dislike():
+    data = request.get_json()
+    name = data.get('name')
+    new_rating = mysql_engine.decrement_rating(name)
+    return jsonify({'rating': new_rating})
 
 if 'DB_NAME' not in os.environ:
     app.run(debug=True, host="0.0.0.0", port=5000)
