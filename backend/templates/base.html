@@ -16,42 +16,50 @@
         </div>
       </div>
 
-      <div class="input-box">
-        <img src="{{ url_for('static', filename='images/search2.png') }}" />
-        <!-- Remove onkeyup from the input -->
-        <input name="Name"  placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val" onkeyup="if(event.key==='Enter'){filterText();}"  style="font-family: 'Courier New', monospace; background-color: white;">
-        <!-- Add a search button -->
-        <button style="font-family: 'Courier New', monospace; background-color: grey; color: white;" onclick="filterText()">Search</button>
+      <!-- Start Wrap Search Box and Drop Down in Flex Container-->
+      <div style="display: flex; align-items: flex-start; gap: 40px; margin-top: 30px;">
+
+        <div class="input-box" style="flex: 1; background-color: white; padding: 20px; border-radius: 10px;">
+          <img src="{{ url_for('static', filename='images/search2.png') }}" />
+          <!-- Remove onkeyup from the input -->
+          <input name="Name"  placeholder="Search 'Harry Potter' or 'Dramione'..." id="filter-text-val" onkeyup="if(event.key==='Enter'){filterText();}"  style="font-family: 'Courier New', monospace; background-color: white;">
+          <!-- Add a search button -->
+          <button style="font-family: 'Courier New', monospace; background-color: grey; color: white;" onclick="filterText()">Search</button>
+        </div>
+
+        <div>
+          <!--Drop down list of fandoms-->
+          <label for="fandom_dropdown"></label>
+    
+          <select name="fandom_dropdown" id="fandom_dropdown" size="4">
+    
+            <option value="" disabled selected>Select a fandom</option>
+            <option value='DC Superheroes'>DC Universe</option>
+            <option value='Doctor Who'>Doctor Who</option>
+            <option value='Greek Mythology'>Greek Myths</option>
+            <option value='Harry Potter'>Harry Potter</option>
+            <option value='How to Train Your Dragon'>How To Train Your Dragon</option>
+            <option value='Hunger Games'>Hunger Games</option>
+            <option value='"Kardashians"'>Kardashians</option>
+            <option value='Marvel'>Marvel</option>
+            <option value='"Merlin"'>Merlin</option>
+            <option value='My Hero Academia'>My Hero Academia</option>
+            <option value='"One Direction"'>One Direction</option>
+            <option value='Pirates of the Caribbean'>Pirates of the Carribbean</option>
+            <option value='Princess Diaries'>The Princess Diaries</option>
+            <option value='Sherlock'>Sherlock</option>
+            <option value='Star Trek'>Star Trek</option>
+            <option value='Star Wars'>Star Wars</option>
+            <option value='Supernatural'>Supernatural</option>
+            <option value='Teen Wolf'>Teen Wolf</option>
+          </select>
+        </div>
+
       </div>
+      <!-- End Wrap Search Box and Drop Down in Flex Container-->
     </div>
 
-    <div>
-      <!--Drop down list of fandoms-->
-      <label for="fandom_dropdown"></label>
-
-      <select name="fandom_dropdown" id="fandom_dropdown" size="4">
-
-        <option value="" disabled selected>Select a fandom</option>
-        <option value='DC Superheroes'>DC Universe</option>
-        <option value='Doctor Who'>Doctor Who</option>
-        <option value='Greek Mythology'>Greek Myths</option>
-        <option value='Harry Potter'>Harry Potter</option>
-        <option value='How to Train Your Dragon'>How To Train Your Dragon</option>
-        <option value='Hunger Games'>Hunger Games</option>
-        <option value='"Kardashians"'>Kardashians</option>
-        <option value='Marvel'>Marvel</option>
-        <option value='"Merlin"'>Merlin</option>
-        <option value='My Hero Academia'>My Hero Academia</option>
-        <option value='"One Direction"'>One Direction</option>
-        <option value='Pirates of the Caribbean'>Pirates of the Carribbean</option>
-        <option value='Princess Diaries'>The Princess Diaries</option>
-        <option value='Sherlock'>Sherlock</option>
-        <option value='Star Trek'>Star Trek</option>
-        <option value='Star Wars'>Star Wars</option>
-        <option value='Supernatural'>Supernatural</option>
-        <option value='Teen Wolf'>Teen Wolf</option>
-      </select>
-    </div>
+    
 
     <div id="answer-box">
     </div>
